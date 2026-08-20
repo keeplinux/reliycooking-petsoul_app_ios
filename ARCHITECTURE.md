@@ -35,7 +35,7 @@
 - **单向依赖**：上层依赖下层，下层不感知上层；ViewModel 不直接调网络，而是通过 UseCase → Repository
 - **协议导向**：Domain 层定义 Repository 协议，Data 层提供实现，便于 Mock 测试与替换
 - **模块化**：按 Feature 拆分为独立 Swift Package / Target，编译隔离、职责清晰
-- **离线优先**：本地 CoreData/SwiftData 为唯一数据源（Single Source of Truth），UI 只读本地，网络层负责同步
+- **离线优先**：本地 CoreData 为唯一数据源（Single Source of Truth），UI 只读本地，网络层负责同步
 
 ### 1.2 数据流（单向数据流）
 
@@ -140,10 +140,10 @@ FeatureHome/
 | 项目 | 方案 | 说明 |
 |------|------|------|
 | 语言 | Swift 6.0 | 启用严格并发检查（Strict Concurrency） |
-| UI 框架 | SwiftUI | 声明式 UI，搭配 `@Observable` 宏 |
-| 架构 | Clean Architecture + MVVM | 分层解耦，ViewModel 用 `@Observable` |
-| 最低系统 | iOS 17.0+ | 覆盖 iPhone XS 及以上，使用 SwiftData |
-| 数据存储 | SwiftData | iOS 17+ 原生，与 SwiftUI 深度集成 |
+| UI 框架 | SwiftUI | 声明式 UI，ViewModel 用 `ObservableObject` + `@Published` |
+| 架构 | Clean Architecture + MVVM | 分层解耦（iOS 16 兼容，不用 `@Observable` 宏） |
+| 最低系统 | iOS 16.0+ | 覆盖 iPhone SE 2 及以上，与 PRD 兼容性要求一致 |
+| 数据存储 | CoreData | iOS 16+ 原生，UI 用 `@FetchRequest` 驱动刷新 |
 | 网络 | URLSession + async/await | RESTful API |
 | 实时通信 | WebSocket（URLSessionWebSocketTask） | 设备状态实时推送 |
 | 3D 渲染 | SceneKit | 数字孪生 3D 形象渲染与手势交互 |
@@ -550,9 +550,9 @@ App ←→ 后端云 ←→ 探针硬件
 ### 6.4 离线优先与本地缓存
 
 ```
-SwiftData/CoreData（本地数据库，Single Source of Truth）
+CoreData（本地数据库，Single Source of Truth）
   ├── Pet / DigitalTwin / Probe / Observation / HealthReport
-  ├── UI 通过 @Query / @FetchRequest 直接读本地
+  ├── UI 通过 @FetchRequest 直接读本地
   └── 网络层负责：拉取远端 → 写入本地（UI 自动刷新）
 
 网络层策略：
@@ -579,10 +579,10 @@ LaunchView（Logo 动画，约3秒）
 
 | # | 决策点 | 决定 | 说明 |
 |---|--------|------|------|
-| 1 | **最低 iOS 版本** | ✅ **iOS 17** | 覆盖 iPhone XS 及以上，可使用 SwiftData / 最新 SwiftUI 特性 |
+| 1 | **最低 iOS 版本** | ✅ **iOS 16** | 覆盖 iPhone SE 2 及以上，与 PRD 兼容性要求一致 |
 | 2 | **3D孪生重建方案** | ✅ **MVP预置模型 → P1接第三方API** | MVP 用预置通用宠物 .usdz 模型占位，P1 接入第三方 AI 重建 API 验证效果 |
 | 3 | **后端方案** | ✅ **BaaS（Supabase）起步，详见 7.1** | 稳定简单，无需自建服务器，详见下方说明 |
-| 4 | **数据持久化** | ✅ **SwiftData** | iOS 17+ 原生，与现代 SwiftUI 集成最佳 |
+| 4 | **数据持久化** | ✅ **CoreData** | iOS 16+ 原生，UI 用 `@FetchRequest` 驱动刷新 |
 | 5 | **登录方式** | ✅ **MVP全做** | 手机号 + 微信 + Apple ID（App Store 强制要求 Apple ID） |
 | 6 | **设备私有协议** | ✅ **MVP不阻塞，详见 7.2** | MVP 设备页全部用 Mock 数据，协议待硬件团队提供 |
 | 7 | **图表方案** | ✅ **SwiftUI Charts（原生）** | iOS 16+ 内置，零三方依赖 |

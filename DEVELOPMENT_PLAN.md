@@ -36,7 +36,7 @@
 | UI 框架 | SwiftUI |
 | 最低系统版本 | iOS 16.0+（与 PRD「兼容性」要求一致） |
 | 架构 | MVVM（UI 层 SwiftUI View + ViewModel 用 @Observable + Model 层） |
-| 数据存储 | CoreData / SwiftData + 云端同步 |
+| 数据存储 | CoreData + 云端同步 |
 | 网络 | 现代 async/await 架构，RESTful + WebSocket |
 | AR 渲染 | ARKit + SceneKit 星空叠加层 |
 | 图标 / 动效 | 统一「星轨」设计语言，深空粒子动画 |
