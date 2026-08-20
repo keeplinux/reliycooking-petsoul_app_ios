@@ -1,10 +1,8 @@
 # 硅宠场域 PetSoul · iOS App 技术架构设计
 
-> 版本：v0.1（草案，待评审）
+> 版本：v1.0（决策已对齐，定稿）
 > 日期：2026年8月20日
 > 关联文档：[README.md](./README.md)（PRD v2.1）、[DEVELOPMENT_PLAN.md](./DEVELOPMENT_PLAN.md)
->
-> 📌 本文档为技术架构设计初稿，用于开发前对齐。标记为 ❓ 的条目为待决策点，需讨论确认。
 
 ---
 
@@ -144,8 +142,8 @@ FeatureHome/
 | 语言 | Swift 6.0 | 启用严格并发检查（Strict Concurrency） |
 | UI 框架 | SwiftUI | 声明式 UI，搭配 `@Observable` 宏 |
 | 架构 | Clean Architecture + MVVM | 分层解耦，ViewModel 用 `@Observable` |
-| 最低系统 | iOS 16.0+ | 覆盖 iPhone SE 2 及以上 |
-| 数据存储 | SwiftData ❓（或 CoreData） | SwiftData 更现代但 iOS 17+；若需兼容 iOS 16 则用 CoreData。**待确认** |
+| 最低系统 | iOS 17.0+ | 覆盖 iPhone XS 及以上，使用 SwiftData |
+| 数据存储 | SwiftData | iOS 17+ 原生，与 SwiftUI 深度集成 |
 | 网络 | URLSession + async/await | RESTful API |
 | 实时通信 | WebSocket（URLSessionWebSocketTask） | 设备状态实时推送 |
 | 3D 渲染 | SceneKit | 数字孪生 3D 形象渲染与手势交互 |
@@ -161,9 +159,9 @@ FeatureHome/
 
 | 库 | 用途 | 是否必需 |
 |----|------|---------|
-| 无（尽量零三方依赖） | 优先使用 Apple 原生框架 | — |
-| ❓ [LumaKit / Meshy SDK] | 照片/视频→3D模型重建 | 待调研，可能用自研后端 |
-| ❓ [Charts](https://github.com/apple/SwiftCharts) | 健康趋势图表 | 或用 SwiftUI 原生 Charts（iOS 16+） |
+| [Supabase Swift SDK](https://github.com/supabase/supabase-swift) | BaaS 客户端（Auth/Database/Storage/Realtime） | ✅ 必需 |
+| ❓ [LumaKit / Meshy SDK] | 照片/视频→3D模型重建 | P1 阶段接入，MVP 不需要 |
+| 无（其余零三方依赖） | 图表用 SwiftUI Charts，3D 用 SceneKit，AR 用 ARKit | — |
 
 > **原则**：能用原生不用三方。图表用 SwiftUI Charts；3D 重建倾向后端 API 化（App 只负责上传素材、轮询结果），不在客户端引入重 SDK。
 
@@ -285,7 +283,7 @@ enum AnomalyLevel { case normal, mild(stellarSpot), moderate(flare), severe(dyin
 
 | 项目 | 约定 |
 |------|------|
-| Base URL | `https://api.petsoul.silifield.com/v1` ❓（域名待定） |
+| Base URL | Supabase Project URL（如 `https://xxx.supabase.co`），REST 走 PostgREST，Auth/Storage/Realtime 各有子端点 |
 | 通信格式 | JSON（请求体 / 响应体） |
 | 认证 | `Authorization: Bearer <accessToken>`，Token 过期用 refreshToken 刷新 |
 | 时间格式 | ISO 8601（UTC）`2026-08-20T09:00:00Z` |
@@ -577,20 +575,86 @@ LaunchView（Logo 动画，约3秒）
 
 ---
 
-## 7. 待对齐决策点（❓）
+## 7. 决策点确认（✅ 已对齐）
 
-以下决策点需讨论确认后才能最终定稿：
+| # | 决策点 | 决定 | 说明 |
+|---|--------|------|------|
+| 1 | **最低 iOS 版本** | ✅ **iOS 17** | 覆盖 iPhone XS 及以上，可使用 SwiftData / 最新 SwiftUI 特性 |
+| 2 | **3D孪生重建方案** | ✅ **MVP预置模型 → P1接第三方API** | MVP 用预置通用宠物 .usdz 模型占位，P1 接入第三方 AI 重建 API 验证效果 |
+| 3 | **后端方案** | ✅ **BaaS（Supabase）起步，详见 7.1** | 稳定简单，无需自建服务器，详见下方说明 |
+| 4 | **数据持久化** | ✅ **SwiftData** | iOS 17+ 原生，与现代 SwiftUI 集成最佳 |
+| 5 | **登录方式** | ✅ **MVP全做** | 手机号 + 微信 + Apple ID（App Store 强制要求 Apple ID） |
+| 6 | **设备私有协议** | ✅ **MVP不阻塞，详见 7.2** | MVP 设备页全部用 Mock 数据，协议待硬件团队提供 |
+| 7 | **图表方案** | ✅ **SwiftUI Charts（原生）** | iOS 16+ 内置，零三方依赖 |
+| 8 | **iPad 支持** | ✅ **通用（iPhone + iPad）** | SwiftUI 自适应布局，额外成本低 |
 
-| # | 决策点 | 选项 | 我的建议 | 影响 |
-|---|--------|------|---------|------|
-| 1 | **最低 iOS 版本** | iOS 16 / iOS 17 | iOS 16（覆盖更广） | 决定用 SwiftData（17+）还是 CoreData（16+） |
-| 2 | **3D孪生重建方案** | 自研AI后端 / 第三方API（Luma/Meshy）/ MVP先用预置模型 | MVP 先预置模型，P1 接第三方API验证效果 | 核心卖点，最大技术风险 |
-| 3 | **后端 API 域名/环境** | 待定 | 需确定 dev/staging/prod 三套环境 | 网络层配置 |
-| 4 | **数据持久化** | SwiftData / CoreData | 若选 iOS 16 → CoreData；iOS 17 → SwiftData | 整个数据层实现 |
-| 5 | **登录方式优先级** | 手机号 / 微信 / Apple ID | MVP 全做（App Store 要求支持 Apple ID） | 认证模块 |
-| 6 | **设备私有协议** | 需硬件团队提供协议文档 | 待硬件方提供 | 设备通信层 |
-| 7 | **图表方案** | SwiftUI Charts（原生）/ 三方 Charts | SwiftUI Charts（iOS 16+ 原生） | 健康趋势页 |
-| 8 | **是否支持 iPad** | 仅 iPhone / 通用 | PRD 已定仅 iPhone | 布局策略 |
+### 7.1 决策点3详解：后端方案（你要稳定和简单，我的建议）
+
+#### 什么是"后端"？
+你的 App 需要存数据（宠物档案、健康记录）、做登录、存3D模型文件、给设备发指令——这些都需要一台"服务器"在云端24小时运行。这就是后端。
+
+#### 三种方案对比
+
+| 方案 | 是什么 | 稳定性 | 简单度 | 适合你吗 |
+|------|--------|--------|--------|---------|
+| **A. BaaS（推荐）** | "后端即服务"，别人帮你把数据库/登录/文件存储/实时推送全搭好了，你只管调用 | ⭐⭐⭐ 高（大厂运维） | ⭐⭐⭐ 最简单（不用管服务器） | ✅ **最适合** |
+| B. 自建服务器 | 自己租云服务器、写后端代码、维护数据库、管安全 | ⭐⭐ 中（需自己运维） | ⭐ 复杂（需后端开发） | ❌ 太重 |
+| C. Apple CloudKit | Apple自带的云服务，免费但只限Apple生态 | ⭐⭐⭐ 高 | ⭐⭐⭐ 最简单 | ⚠️ 功能受限，不适合设备通信 |
+
+#### 我推荐：Supabase（开源 BaaS）
+
+**为什么选它**：
+- **稳定**：全球 CDN，99.9% 可用性，大公司也在用
+- **简单**：自带数据库 + 登录 + 文件存储 + 实时推送，不用自己搭
+- **开源**：数据在你自己手里，随时可迁移，不被锁死
+- **免费起步**：免费额度够 MVP 用（500MB 数据库 + 1GB 文件存储）
+- **功能齐全**：恰好覆盖我们需要的——用户认证、宠物数据 CRUD、3D 模型文件存储、WebSocket 实时推送
+
+**它帮你做了什么**（对照我们的需求）：
+
+| 我们的需求 | Supabase 对应功能 | 你要做的 |
+|-----------|------------------|---------|
+| 用户登录（手机/微信/Apple） | Supabase Auth | 配置登录方式 |
+| 存宠物/健康数据 | Supabase Database（PostgreSQL） | 设计表结构 |
+| 存3D模型/照片文件 | Supabase Storage | 上传下载文件 |
+| 设备实时状态推送 | Supabase Realtime（WebSocket） | 订阅数据变更 |
+| 后端逻辑（健康报告生成等） | Supabase Edge Functions | 写简单函数 |
+
+**关于国内访问**：Supabase 服务器在海外，国内访问可能有轻微延迟（200-500ms），对宠物 App 这种非高频交易场景完全够用。如果后续需要更快，可迁移到国内云。
+
+**环境划分**（稳定原则）：
+- **开发环境（dev）**：一个 Supabase Project，开发调试用，数据可随意删改
+- **生产环境（prod）**：另一个 Supabase Project，正式用户数据，严格保护
+- MVP 阶段先只用 dev 环境，上线前再建 prod
+
+> **结论**：你不需要懂后端技术，注册一个 Supabase 账号即可。我会把 App 端的网络层写好对接，你只需要提供一个 Supabase 项目的 URL 和 API Key（注册后我指导你获取）。
+
+---
+
+### 7.2 决策点6详解：设备私有协议（这是什么）
+
+#### 什么是"设备私有协议"？
+你的探针硬件（饮水舱、喂食器等）是一台联网的小设备。它需要和云端"对话"——上报"今天喝了3次水"、接收"把水温调到45度"的指令。这套对话的"语言规则"就是**设备协议**。
+
+打个比方：App 和后端之间用 HTTP/JSON 说话（我们已经定义好了）；但后端和硬件设备之间，用什么语言、什么格式、通过什么通道通信，这取决于硬件团队的设计——这就是"设备私有协议"。
+
+#### 为什么 MVP 阶段不阻塞？
+设备通信链路是：`App → 后端 → 硬件设备`。
+
+MVP 阶段我们做的是 `App → 后端` 这一段（用 Mock 假数据模拟设备响应）。`后端 → 硬件设备` 这一段是硬件团队的事，他们需要提供：
+
+| 需要硬件团队提供的 | 举例 | 什么时候需要 |
+|------------------|------|------------|
+| 设备如何联网 | WiFi 配网流程、绑定二维码格式 | 真机联调阶段（PRD第15-18周） |
+| 数据上报格式 | `{"type":"drinking","volume":50,"time":"..."}` | 真机联调阶段 |
+| 指令下发格式 | `{"cmd":"set_temp","value":45}` | 真机联调阶段 |
+| 通信通道 | MQTT / HTTP / WebSocket？ | 真机联调阶段 |
+
+**在此之前**，App 端设备相关页面全部用 Mock 数据开发，不依赖真实硬件。等硬件团队准备好协议文档，我们再对接替换 Mock，完全不影响 MVP 进度。
+
+> **结论**：你现在不需要做任何事。等硬件团队那边准备好，把协议文档给我们就行。MVP 阶段 App 用假数据先把界面和交互做出来。
+
+---
 
 ---
 
@@ -606,7 +670,7 @@ LaunchView（Logo 动画，约3秒）
 
 ---
 
-> 📌 本文档为技术架构设计初稿，待 ❓ 决策点确认后定稿。
+> 📌 本文档为技术架构定稿（v1.0），8 项决策点已全部对齐。开发可按第8节路径启动。
 
 
 ```
