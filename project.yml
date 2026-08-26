@@ -31,6 +31,7 @@ targets:
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
         INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
         INFOPLIST_KEY_UISupportedInterfaceOrientations: "UIInterfaceOrientationPortrait"
+        GENERATE_INFOPLIST_FILE: YES
         INFOPLIST_KEY_CFBundleDisplayName: "硅宠场域"
         INFOPLIST_KEY_NSCameraUsageDescription: "用于扫码添加设备和识别宠物"
         INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription: "用于连接硅宠探针智能设备"

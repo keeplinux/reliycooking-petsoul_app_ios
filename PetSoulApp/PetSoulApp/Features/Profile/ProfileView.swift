@@ -4,7 +4,7 @@
 //
 //  👤 家长中心（个人设置）
 //  PRD 3.4 —— 家长个人中心、账号管理、系统设置
-//  MVP 阶段：占位菜单
+//  融合版：宣纸白底 + 玻璃卡片 + 松绿配色
 //
 
 import SwiftUI
@@ -13,7 +13,7 @@ struct ProfileView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                StarSpaceBackground()
+                PaperBackground()
 
                 ScrollView {
                     VStack(spacing: DesignTokens.Spacing.lg) {
@@ -27,7 +27,6 @@ struct ProfileView: View {
             }
             .navigationTitle("家长中心")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbarColorScheme(.dark, for: .navigationBar)
         }
     }
 
@@ -35,93 +34,51 @@ struct ProfileView: View {
         HStack(spacing: DesignTokens.Spacing.md) {
             ZStack {
                 Circle()
-                    .fill(DesignTokens.Color.starGold.opacity(0.2))
+                    .fill(DesignTokens.Color.pine.opacity(0.1))
                     .frame(width: 64, height: 64)
                 Image(systemName: "person.crop.circle.fill")
                     .font(.system(size: 56))
-                    .foregroundStyle(DesignTokens.Color.starGold)
+                    .foregroundStyle(DesignTokens.Color.pine)
             }
 
             VStack(alignment: .leading, spacing: 4) {
                 Text("硅宠家长")
                     .font(DesignTokens.Font.title3)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(DesignTokens.Color.textPrimary)
                 Text("已绑定 2 颗恒星 · 2 个探针")
                     .font(DesignTokens.Font.caption)
-                    .foregroundStyle(DesignTokens.Color.siliconBlueLight)
+                    .foregroundStyle(DesignTokens.Color.textMute)
             }
 
             Spacer()
 
             Image(systemName: "qrcode")
                 .font(.title2)
-                .foregroundStyle(DesignTokens.Color.starGold)
+                .foregroundStyle(DesignTokens.Color.pine)
         }
-        .deepSpaceCard()
+        .glassCard()
     }
 
     private var menuSection: some View {
         VStack(spacing: 0) {
-            MenuRow(icon: "bell.fill", title: "消息通知", badge: "3")
-            Divider().overlay(DesignTokens.Color.siliconBlueLight.opacity(0.1))
-            MenuRow(icon: "shield.fill", title: "隐私与安全")
-            Divider().overlay(DesignTokens.Color.siliconBlueLight.opacity(0.1))
-            MenuRow(icon: "gearshape.fill", title: "系统设置")
+            NavigationLink { MessageCenterView() } label: { MenuRow(icon: "bell.fill", title: "消息通知", badge: "3") }
+            Divider().overlay(DesignTokens.Color.mist)
+            NavigationLink { PrivacyCenterView() } label: { MenuRow(icon: "shield.fill", title: "隐私与安全") }
+            Divider().overlay(DesignTokens.Color.mist)
+            NavigationLink { SettingsView() } label: { MenuRow(icon: "gearshape.fill", title: "系统设置") }
         }
-        .deepSpaceCard()
-        .padding(.horizontal, 0) // 卡片内已有 padding
-        .padding([.horizontal], DesignTokens.Spacing.md)
+        .glassCard()
     }
 
     private var aboutSection: some View {
         VStack(spacing: 0) {
-            MenuRow(icon: "info.circle.fill", title: "关于硅宠场域")
-            Divider().overlay(DesignTokens.Color.siliconBlueLight.opacity(0.1))
+            NavigationLink { AboutView() } label: { MenuRow(icon: "info.circle.fill", title: "关于硅宠场域") }
+            Divider().overlay(DesignTokens.Color.mist)
             MenuRow(icon: "doc.text.fill", title: "用户协议与隐私政策")
-            Divider().overlay(DesignTokens.Color.siliconBlueLight.opacity(0.1))
-            MenuRow(icon: "star.fill", title: "给我们评分")
+            Divider().overlay(DesignTokens.Color.mist)
+            NavigationLink { ProductInfoView() } label: { MenuRow(icon: "cube.box.fill", title: "产品信息") }
         }
-        .deepSpaceCard()
-        .padding([.horizontal], DesignTokens.Spacing.md)
-    }
-}
-
-// MARK: - 菜单行
-struct MenuRow: View {
-    let icon: String
-    let title: String
-    var badge: String? = nil
-
-    var body: some View {
-        HStack(spacing: DesignTokens.Spacing.md) {
-            Image(systemName: icon)
-                .font(.system(size: 18))
-                .foregroundStyle(DesignTokens.Color.starGold)
-                .frame(width: 28)
-
-            Text(title)
-                .font(DesignTokens.Font.body)
-                .foregroundStyle(.white)
-
-            Spacer()
-
-            if let badge {
-                Text(badge)
-                    .font(DesignTokens.Font.caption2)
-                    .foregroundStyle(DesignTokens.Color.deepSpace)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 2)
-                    .background(DesignTokens.Color.warmOrange)
-                    .clipShape(Capsule())
-            }
-
-            Image(systemName: "chevron.right")
-                .font(.caption)
-                .foregroundStyle(DesignTokens.Color.siliconBlueLight.opacity(0.5))
-        }
-        .padding(.vertical, DesignTokens.Spacing.md)
-        .padding(.horizontal, DesignTokens.Spacing.md)
-        .contentShape(Rectangle())
+        .glassCard()
     }
 }
 

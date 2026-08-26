@@ -4,13 +4,14 @@
 //
 //  🌌 宇宙首页（宠物数字孪生星系）
 //  PRD 3.1 —— 首页正面主体展示 3D 宠物数字孪生形象
-//  MVP 阶段：预置占位 3D 模型 + 空态引导
+//  融合版：宣纸白底 + 玻璃卡片 + 衬线标题
 //
 
 import SwiftUI
 
 struct HomeView: View {
     @State private var selectedPetIndex = 0
+    @State private var showAddPet = false
 
     // MVP Mock 数据
     private let mockPets: [MockPet] = [
@@ -21,7 +22,7 @@ struct HomeView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                StarSpaceBackground()
+                PaperBackground()
 
                 if mockPets.isEmpty {
                     EmptyPetStateView()
@@ -33,18 +34,21 @@ struct HomeView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Text("家园星系")
-                        .font(DesignTokens.Font.title2)
-                        .foregroundStyle(DesignTokens.Color.starGold)
+                        .font(DesignTokens.Font.title)
+                        .foregroundStyle(DesignTokens.Color.ink)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        // TODO: 添加宠物
+                        showAddPet = true
                     } label: {
                         Image(systemName: "plus.circle.fill")
-                            .foregroundStyle(DesignTokens.Color.starGold)
+                            .foregroundStyle(DesignTokens.Color.pine)
                             .font(.title3)
                     }
                 }
+            }
+            .sheet(isPresented: $showAddPet) {
+                AddPetView()
             }
         }
     }
@@ -78,8 +82,8 @@ struct HomeView: View {
                 ForEach(0..<mockPets.count, id: \.self) { index in
                     Circle()
                         .fill(index == selectedPetIndex
-                              ? DesignTokens.Color.starGold
-                              : DesignTokens.Color.siliconBlueLight.opacity(0.3))
+                              ? DesignTokens.Color.pine
+                              : DesignTokens.Color.sage.opacity(0.3))
                         .frame(width: 8, height: 8)
                 }
             }
@@ -87,10 +91,10 @@ struct HomeView: View {
             VStack(spacing: 2) {
                 Text(currentPet.name)
                     .font(DesignTokens.Font.headline)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(DesignTokens.Color.textPrimary)
                 Text("\(currentPet.species) · \(currentPet.stage)")
                     .font(DesignTokens.Font.caption2)
-                    .foregroundStyle(DesignTokens.Color.siliconBlueLight)
+                    .foregroundStyle(DesignTokens.Color.textMute)
             }
 
             Spacer()
@@ -111,10 +115,30 @@ struct HomeView: View {
     }
 
     private var observationQuickView: some View {
-        HStack(spacing: DesignTokens.Spacing.md) {
-            ObservationCard(title: "饮水", value: "5", unit: "次", icon: "drop.fill")
-            ObservationCard(title: "进食", value: "3", unit: "次", icon: "fork.knife")
-            ObservationCard(title: "靠近", value: "12", unit: "次", icon: "location.fill")
+        VStack(spacing: DesignTokens.Spacing.md) {
+            HStack(spacing: DesignTokens.Spacing.md) {
+                ObservationCard(title: "饮水", value: "5", unit: "次", icon: "drop.fill")
+                ObservationCard(title: "进食", value: "3", unit: "次", icon: "fork.knife")
+                ObservationCard(title: "靠近", value: "12", unit: "次", icon: "location.fill")
+            }
+
+            // AR 星图观测入口
+            NavigationLink {
+                StarMapView()
+            } label: {
+                HStack {
+                    Image(systemName: "star.fill")
+                        .foregroundStyle(DesignTokens.Color.pine)
+                    Text("AR 星图观测 · 寻找我的恒星")
+                        .font(DesignTokens.Font.body)
+                        .foregroundStyle(DesignTokens.Color.textPrimary)
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.caption)
+                        .foregroundStyle(DesignTokens.Color.textFaint)
+                }
+                .padding(.vertical, DesignTokens.Spacing.sm)
+            }
         }
         .padding(.horizontal, DesignTokens.Spacing.lg)
     }

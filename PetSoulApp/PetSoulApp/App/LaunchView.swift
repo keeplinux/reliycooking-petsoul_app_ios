@@ -3,7 +3,7 @@
 //  PetSoul
 //
 //  启动页：品牌 Logo 展示约 3 秒，可点击/滑动跳过
-//  PRD 3.6 — 预留占位页面，品牌素材待后续补充
+//  PRD 3.6 — 深色沉浸场景，保留 StarSpaceBackground
 //
 
 import SwiftUI
@@ -22,7 +22,7 @@ struct LaunchView: View {
 
     var body: some View {
         ZStack {
-            // 深空背景
+            // 深空背景（启动页保留沉浸感）
             StarSpaceBackground()
 
             VStack(spacing: 32) {
@@ -36,8 +36,8 @@ struct LaunchView: View {
                             .fill(
                                 RadialGradient(
                                     colors: [
-                                        DesignTokens.Color.starGold.opacity(0.6),
-                                        DesignTokens.Color.starGold.opacity(0),
+                                        DesignTokens.Color.pine.opacity(0.6),
+                                        DesignTokens.Color.pine.opacity(0),
                                     ],
                                     center: .center,
                                     startRadius: 20,
@@ -52,7 +52,7 @@ struct LaunchView: View {
                             .font(.system(size: 72))
                             .foregroundStyle(
                                 LinearGradient(
-                                    colors: [DesignTokens.Color.starGold, DesignTokens.Color.warmOrange],
+                                    colors: [DesignTokens.Color.pine, DesignTokens.Color.cinnabar],
                                     startPoint: .top,
                                     endPoint: .bottom
                                 )
@@ -63,13 +63,13 @@ struct LaunchView: View {
 
                     // 品牌名
                     Text("硅宠场域")
-                        .font(.title2.weight(.bold))
-                        .foregroundStyle(DesignTokens.Color.starGold)
+                        .font(.system(size: 22, weight: .bold, design: .serif))
+                        .foregroundStyle(DesignTokens.Color.mist)
                         .opacity(logoOpacity)
 
                     Text("PetSoul")
                         .font(.caption)
-                        .foregroundStyle(DesignTokens.Color.siliconBlueLight)
+                        .foregroundStyle(DesignTokens.Color.sage)
                         .opacity(logoOpacity)
                 }
 
@@ -79,12 +79,12 @@ struct LaunchView: View {
                 VStack(spacing: 8) {
                     ProgressView(value: progress)
                         .progressViewStyle(.linear)
-                        .tint(DesignTokens.Color.starGold)
+                        .tint(DesignTokens.Color.pine)
                         .frame(width: 120)
 
                     Text("每一只宠物，都是从硅宠场域降临地球的温暖恒星")
                         .font(.caption2)
-                        .foregroundStyle(DesignTokens.Color.siliconBlueLight.opacity(0.7))
+                        .foregroundStyle(DesignTokens.Color.sage.opacity(0.7))
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 40)
                 }

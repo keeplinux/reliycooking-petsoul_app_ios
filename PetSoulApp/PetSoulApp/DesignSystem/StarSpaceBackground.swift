@@ -2,8 +2,9 @@
 //  StarSpaceBackground.swift
 //  PetSoul
 //
-//  深空星海背景 —— 硅蓝渐变 + 呼吸光点粒子
-//  用于启动页、首页等需要宇宙沉浸感的场景
+//  深空星海背景 —— 墨绿深空渐变 + 呼吸光点粒子
+//  仅用于深色沉浸场景：启动页 / AR星图 / 赫罗图 / 星轨明信片
+//  日常浅色页面请使用 PaperBackground
 //
 
 import SwiftUI
@@ -19,19 +20,19 @@ struct StarSpaceBackground: View {
 
     var body: some View {
         ZStack {
-            // 渐变底色
+            // 墨绿深空渐变底色
             LinearGradient(
                 colors: [
-                    DesignTokens.Color.deepSpace,
-                    DesignTokens.Color.siliconBlue,
-                    DesignTokens.Color.deepSpace,
+                    DesignTokens.Color.night,
+                    DesignTokens.Color.ink,
+                    DesignTokens.Color.night,
                 ],
                 startPoint: .top,
                 endPoint: .bottom
             )
             .ignoresSafeArea()
 
-            // 星点粒子
+            // 星点粒子（松绿微光）
             Canvas { context, size in
                 for star in stars {
                     let opacity = animated ? star.opacity * (animateBreath ? 1.0 : 0.5) : star.opacity
@@ -42,7 +43,7 @@ struct StarSpaceBackground: View {
                                              y: star.y * size.height,
                                              width: star.size,
                                              height: star.size)),
-                        with: .color(DesignTokens.Color.starGold)
+                        with: .color(DesignTokens.Color.sage)
                     )
                 }
             }

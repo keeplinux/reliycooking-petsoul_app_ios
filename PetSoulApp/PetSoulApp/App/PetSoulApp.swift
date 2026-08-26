@@ -17,7 +17,7 @@ struct PetSoulApp: App {
         WindowGroup {
             RootView()
                 .environmentObject(appState)
-                .preferredColorScheme(.dark) // 宇宙叙事深空底色
+                .preferredColorScheme(.light) // 宣纸白底色（日常浅色模式）
         }
     }
 }

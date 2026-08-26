@@ -36,8 +36,8 @@ struct RootTabView: View {
                 }
                 .tag(AppState.Tab.profile)
         }
-        // 宇宙叙事深空底色
-        .tint(DesignTokens.Color.starGold)
+        // 松绿为 Tab 主色调
+        .tint(DesignTokens.Color.pine)
     }
 }
 

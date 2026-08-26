@@ -7,34 +7,68 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0B6F7FAB37540F34AE1F8CD7 /* HealthBaselineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7009892CC0FD6361E8C9649 /* HealthBaselineView.swift */; };
+		145B7F9B5BD456640E5EEC27 /* BehaviorInsightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EC212A01DE0B5FCFF0E9D5C /* BehaviorInsightView.swift */; };
+		1765F7FDDE52BEC9331B5F45 /* ProductInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E417E2A4ED48A4F26663470 /* ProductInfoView.swift */; };
 		1938229D970766A44A206095 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE94D2C4A17F4495712F905E /* HomeView.swift */; };
+		1D258E883B6373157FA06F8F /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8255F0C3F7C7B44BFD3C659 /* Components.swift */; };
+		21256183969A54329188888C /* AddPetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83310B5A365C1A32914C9C92 /* AddPetView.swift */; };
+		273EC927E62F208691B7107F /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD1598D8289BB2846989A0B6 /* SettingsView.swift */; };
+		29F402EFFF1E6C2406A12DD1 /* StarMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970C4429B3E35A393A3EA3C1 /* StarMapView.swift */; };
 		2E6D677DCA8CA221BD0AEA12 /* StarSpaceBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = B879EA4B399019414AE23846 /* StarSpaceBackground.swift */; };
 		2F41998204A64A724FAEB34D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D6E83E9B57E5D9A64E340288 /* Assets.xcassets */; };
 		3E652D9AE2199C69DA10CA55 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74E46E8A468CD7B77EDC556 /* RootView.swift */; };
+		447841D4D53B3A264046C61C /* PrivacyCenterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83D4447511A26805CC45FE2 /* PrivacyCenterView.swift */; };
 		46C0DE81EF77949F184610C2 /* RootTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92FE9A52902B029EB7ED8E9 /* RootTabView.swift */; };
+		4A67A166872722CA58D23FA1 /* ProbeDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E887F90FD8863BD641CA18 /* ProbeDetailView.swift */; };
+		4BED1E4F042B1F596FFD4DA3 /* PaperBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B364CFC07CD2ED5D2947809 /* PaperBackground.swift */; };
 		5A9D2C0E1E5F9E022A0247A1 /* LaunchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF0B18343874F7DEDBFD538 /* LaunchView.swift */; };
+		5C17504B739C9AF4496FB9F2 /* MessageCenterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E92B890594C06DCB6EFD907 /* MessageCenterView.swift */; };
+		613B37B1ED77C46E7B744650 /* HealthReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE81A70DD74539D61D7E651 /* HealthReportView.swift */; };
 		6930CB9BDC9777656A04E3A9 /* PetSoulApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1EB7F419F27DCFA1A11833F /* PetSoulApp.swift */; };
+		78AF84E0F625294B27272058 /* PlaceholderScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42972E37B3499F756F481C94 /* PlaceholderScreen.swift */; };
 		7F200305AE879D3B3A77AA08 /* HealthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47AC9D50BE48866FA75BFA0 /* HealthView.swift */; };
 		8E9421351877A7CA1A815FDA /* DesignTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2BD893D4FD277585F864D78 /* DesignTokens.swift */; };
+		A17AF6BA5C2AC0EF4B71187C /* HertzsprungView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1CB26469449FC4B6FFF774C /* HertzsprungView.swift */; };
 		C770546CEA0C11F054C142C7 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA833FFF6519E02080DD6A0A /* ProfileView.swift */; };
 		D093BF1ACBC7A716A1193496 /* HomeComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB1231B4EB10EE27186F0589 /* HomeComponents.swift */; };
+		E03DD11D5361FA25F47CB0E9 /* ProbeShopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3EE6F2135FC245E155D9FE8 /* ProbeShopView.swift */; };
+		E91069719CA70978B03747CC /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 484A534B3950BA4CCC5781D0 /* AboutView.swift */; };
+		E9FABD72C0EE5CADB63E386E /* AddDeviceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71F43A6BAB02403D6EBF6709 /* AddDeviceView.swift */; };
 		F309078CEE2E4A1C98F09D3E /* TwinSceneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E14E365E6D46A9F69EBC3D0D /* TwinSceneView.swift */; };
 		F429AD113A19E0D649F6B159 /* ProbeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9768B7F37FDBA4451C18E8B1 /* ProbeView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0B364CFC07CD2ED5D2947809 /* PaperBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaperBackground.swift; sourceTree = "<group>"; };
+		42972E37B3499F756F481C94 /* PlaceholderScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceholderScreen.swift; sourceTree = "<group>"; };
+		484A534B3950BA4CCC5781D0 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
+		4EC212A01DE0B5FCFF0E9D5C /* BehaviorInsightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BehaviorInsightView.swift; sourceTree = "<group>"; };
+		71F43A6BAB02403D6EBF6709 /* AddDeviceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddDeviceView.swift; sourceTree = "<group>"; };
+		83310B5A365C1A32914C9C92 /* AddPetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPetView.swift; sourceTree = "<group>"; };
+		8E92B890594C06DCB6EFD907 /* MessageCenterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageCenterView.swift; sourceTree = "<group>"; };
+		970C4429B3E35A393A3EA3C1 /* StarMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarMapView.swift; sourceTree = "<group>"; };
 		9768B7F37FDBA4451C18E8B1 /* ProbeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProbeView.swift; sourceTree = "<group>"; };
+		9E417E2A4ED48A4F26663470 /* ProductInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductInfoView.swift; sourceTree = "<group>"; };
+		A8255F0C3F7C7B44BFD3C659 /* Components.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Components.swift; sourceTree = "<group>"; };
+		A83D4447511A26805CC45FE2 /* PrivacyCenterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyCenterView.swift; sourceTree = "<group>"; };
+		A9E887F90FD8863BD641CA18 /* ProbeDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProbeDetailView.swift; sourceTree = "<group>"; };
 		B2BD893D4FD277585F864D78 /* DesignTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignTokens.swift; sourceTree = "<group>"; };
+		B7009892CC0FD6361E8C9649 /* HealthBaselineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthBaselineView.swift; sourceTree = "<group>"; };
 		B879EA4B399019414AE23846 /* StarSpaceBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarSpaceBackground.swift; sourceTree = "<group>"; };
 		B92FE9A52902B029EB7ED8E9 /* RootTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootTabView.swift; sourceTree = "<group>"; };
 		BE94D2C4A17F4495712F905E /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		CA833FFF6519E02080DD6A0A /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		CD1598D8289BB2846989A0B6 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		D1CB26469449FC4B6FFF774C /* HertzsprungView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HertzsprungView.swift; sourceTree = "<group>"; };
+		D3EE6F2135FC245E155D9FE8 /* ProbeShopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProbeShopView.swift; sourceTree = "<group>"; };
 		D47AC9D50BE48866FA75BFA0 /* HealthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthView.swift; sourceTree = "<group>"; };
 		D6E83E9B57E5D9A64E340288 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E14E365E6D46A9F69EBC3D0D /* TwinSceneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwinSceneView.swift; sourceTree = "<group>"; };
 		EB1231B4EB10EE27186F0589 /* HomeComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeComponents.swift; sourceTree = "<group>"; };
 		F1EB7F419F27DCFA1A11833F /* PetSoulApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetSoulApp.swift; sourceTree = "<group>"; };
 		F74E46E8A468CD7B77EDC556 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		FAE81A70DD74539D61D7E651 /* HealthReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthReportView.swift; sourceTree = "<group>"; };
 		FAF0B18343874F7DEDBFD538 /* LaunchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchView.swift; sourceTree = "<group>"; };
 		FFBA2DED2870CE116F2A29F4 /* PetSoul.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = PetSoul.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -51,7 +85,11 @@
 		629063C06B3DA04467D3A123 /* Health */ = {
 			isa = PBXGroup;
 			children = (
+				4EC212A01DE0B5FCFF0E9D5C /* BehaviorInsightView.swift */,
+				B7009892CC0FD6361E8C9649 /* HealthBaselineView.swift */,
+				FAE81A70DD74539D61D7E651 /* HealthReportView.swift */,
 				D47AC9D50BE48866FA75BFA0 /* HealthView.swift */,
+				D1CB26469449FC4B6FFF774C /* HertzsprungView.swift */,
 			);
 			path = Health;
 			sourceTree = "<group>";
@@ -67,7 +105,10 @@
 		75EB4D19A507EA29ECA0034A /* DesignSystem */ = {
 			isa = PBXGroup;
 			children = (
+				A8255F0C3F7C7B44BFD3C659 /* Components.swift */,
 				B2BD893D4FD277585F864D78 /* DesignTokens.swift */,
+				0B364CFC07CD2ED5D2947809 /* PaperBackground.swift */,
+				42972E37B3499F756F481C94 /* PlaceholderScreen.swift */,
 				B879EA4B399019414AE23846 /* StarSpaceBackground.swift */,
 			);
 			path = DesignSystem;
@@ -95,7 +136,12 @@
 		8DB5BB7F2A89A29306880A10 /* Profile */ = {
 			isa = PBXGroup;
 			children = (
+				484A534B3950BA4CCC5781D0 /* AboutView.swift */,
+				8E92B890594C06DCB6EFD907 /* MessageCenterView.swift */,
+				A83D4447511A26805CC45FE2 /* PrivacyCenterView.swift */,
+				9E417E2A4ED48A4F26663470 /* ProductInfoView.swift */,
 				CA833FFF6519E02080DD6A0A /* ProfileView.swift */,
+				CD1598D8289BB2846989A0B6 /* SettingsView.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -103,6 +149,9 @@
 		8EE2A2BA36005D1F050A5AAF /* Probe */ = {
 			isa = PBXGroup;
 			children = (
+				71F43A6BAB02403D6EBF6709 /* AddDeviceView.swift */,
+				A9E887F90FD8863BD641CA18 /* ProbeDetailView.swift */,
+				D3EE6F2135FC245E155D9FE8 /* ProbeShopView.swift */,
 				9768B7F37FDBA4451C18E8B1 /* ProbeView.swift */,
 			);
 			path = Probe;
@@ -130,8 +179,10 @@
 		E33003C26297F45AABAC2152 /* Home */ = {
 			isa = PBXGroup;
 			children = (
+				83310B5A365C1A32914C9C92 /* AddPetView.swift */,
 				EB1231B4EB10EE27186F0589 /* HomeComponents.swift */,
 				BE94D2C4A17F4495712F905E /* HomeView.swift */,
+				970C4429B3E35A393A3EA3C1 /* StarMapView.swift */,
 				E14E365E6D46A9F69EBC3D0D /* TwinSceneView.swift */,
 			);
 			path = Home;
@@ -219,16 +270,33 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E91069719CA70978B03747CC /* AboutView.swift in Sources */,
+				E9FABD72C0EE5CADB63E386E /* AddDeviceView.swift in Sources */,
+				21256183969A54329188888C /* AddPetView.swift in Sources */,
+				145B7F9B5BD456640E5EEC27 /* BehaviorInsightView.swift in Sources */,
+				1D258E883B6373157FA06F8F /* Components.swift in Sources */,
 				8E9421351877A7CA1A815FDA /* DesignTokens.swift in Sources */,
+				0B6F7FAB37540F34AE1F8CD7 /* HealthBaselineView.swift in Sources */,
+				613B37B1ED77C46E7B744650 /* HealthReportView.swift in Sources */,
 				7F200305AE879D3B3A77AA08 /* HealthView.swift in Sources */,
+				A17AF6BA5C2AC0EF4B71187C /* HertzsprungView.swift in Sources */,
 				D093BF1ACBC7A716A1193496 /* HomeComponents.swift in Sources */,
 				1938229D970766A44A206095 /* HomeView.swift in Sources */,
 				5A9D2C0E1E5F9E022A0247A1 /* LaunchView.swift in Sources */,
+				5C17504B739C9AF4496FB9F2 /* MessageCenterView.swift in Sources */,
+				4BED1E4F042B1F596FFD4DA3 /* PaperBackground.swift in Sources */,
 				6930CB9BDC9777656A04E3A9 /* PetSoulApp.swift in Sources */,
+				78AF84E0F625294B27272058 /* PlaceholderScreen.swift in Sources */,
+				447841D4D53B3A264046C61C /* PrivacyCenterView.swift in Sources */,
+				4A67A166872722CA58D23FA1 /* ProbeDetailView.swift in Sources */,
+				E03DD11D5361FA25F47CB0E9 /* ProbeShopView.swift in Sources */,
 				F429AD113A19E0D649F6B159 /* ProbeView.swift in Sources */,
+				1765F7FDDE52BEC9331B5F45 /* ProductInfoView.swift in Sources */,
 				C770546CEA0C11F054C142C7 /* ProfileView.swift in Sources */,
 				46C0DE81EF77949F184610C2 /* RootTabView.swift in Sources */,
 				3E652D9AE2199C69DA10CA55 /* RootView.swift in Sources */,
+				273EC927E62F208691B7107F /* SettingsView.swift in Sources */,
+				29F402EFFF1E6C2406A12DD1 /* StarMapView.swift in Sources */,
 				2E6D677DCA8CA221BD0AEA12 /* StarSpaceBackground.swift in Sources */,
 				F309078CEE2E4A1C98F09D3E /* TwinSceneView.swift in Sources */,
 			);
@@ -243,6 +311,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "硅宠场域";
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "用于连接硅宠探针智能设备";
 				INFOPLIST_KEY_NSCameraUsageDescription = "用于扫码添加设备和识别宠物";
@@ -265,6 +334,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "硅宠场域";
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "用于连接硅宠探针智能设备";
 				INFOPLIST_KEY_NSCameraUsageDescription = "用于扫码添加设备和识别宠物";
