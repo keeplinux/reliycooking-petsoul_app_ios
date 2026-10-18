@@ -1,0 +1,66 @@
+name: Prepare iOS Release draft
+
+on:
+  push:
+    tags: ['v*-ios.*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: iOS release tag
+        required: true
+        default: v1.3.16-ios.1
+
+permissions: {}
+
+jobs:
+  draft:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Create draft awaiting signed IPA
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          TARGET_SHA: ${{ github.sha }}
+          RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
+        shell: python
+        run: |
+          import json, os, urllib.request
+          repo = os.environ['REPOSITORY']
+          tag = os.environ['RELEASE_TAG']
+          if not tag.startswith('v') or '-ios.' not in tag:
+              raise SystemExit('Expected an iOS release tag')
+          headers = {
+              'Authorization': 'Bearer ' + os.environ['GH_TOKEN'],
+              'Accept': 'application/vnd.github+json',
+              'Content-Type': 'application/json',
+              'User-Agent': 'silifield-ios-release',
+          }
+          def api(path, payload=None):
+              req = urllib.request.Request('https://api.github.com/repos/' + repo + path,
+                  data=None if payload is None else json.dumps(payload).encode(), headers=headers)
+              with urllib.request.urlopen(req, timeout=30) as response:
+                  return json.load(response)
+          releases = api('/releases?per_page=100')
+          existing = next((item for item in releases if item['tag_name'] == tag), None)
+          if existing:
+              print('Release already exists: ' + existing['html_url'])
+          else:
+              body = '''React + Capacitor 统一工程，Android/iOS 共用页面、Three.js 场景和业务资源。
+
+          已验证：安卓基准 51 文件校验、双端 15 个 Web 文件 SHA-256 校验、Chromium/WebKit 流程、iOS 模拟器 XCUITest、iPhone ARM64 Release Archive 构建。
+
+          当前状态：等待 Apple 开发者签名。此 Release 保持草稿，尚未提供可安装 IPA。
+          签名与设备授权就绪后，上传签名 IPA、SHA256SUMS.txt 和安装说明，再正式发布。
+          不将未签名 Archive 冒充可安装包；GitHub 下载不能替代 Apple 签名和设备注册。
+
+          签名命令与准备步骤：docs/IOS_RELEASE.md。
+          鸿蒙目前为接入预留，硬件和账号等模拟行为与安卓原型一致。
+          '''
+              result = api('/releases', {
+                  'tag_name': tag, 'target_commitish': os.environ['TARGET_SHA'],
+                  'name': '硅宠场域 ' + tag + '（待签名）',
+                  'body': body, 'draft': True, 'prerelease': True,
+              })
+              print('Created draft: ' + result['html_url'])

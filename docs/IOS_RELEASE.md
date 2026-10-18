@@ -34,3 +34,7 @@ IOS_DEVELOPMENT_TEAM=你的TeamID IOS_EXPORT_METHOD=release-testing npm run rele
 - 只将最终签名 IPA、SHA256SUMS.txt 和安装说明上传 Releases，不上传证书/私钥。
 
 当前签名证书与设备配置尚未就绪，正式签名 IPA 及 Release 附件需在配置完成后生成。
+
+## GitHub Release 草稿
+
+推送 `v*-ios.*` 标签后，GitHub Actions 使用仅该作业有效的仓库令牌建立 Release 草稿。草稿不会自动发布，也不会将未签名产物列为安装包。正式附件仍需完成 Apple 签名后上传。
