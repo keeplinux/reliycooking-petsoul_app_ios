@@ -33,8 +33,25 @@ IOS_DEVELOPMENT_TEAM=你的TeamID IOS_EXPORT_METHOD=release-testing npm run rele
 - 在目标 iPhone 安装启动验证。
 - 只将最终签名 IPA、SHA256SUMS.txt 和安装说明上传 Releases，不上传证书/私钥。
 
-当前签名证书与设备配置尚未就绪，正式签名 IPA 及 Release 附件需在配置完成后生成。
+2026-10-18 已使用 Personal Team 完成 debugging 签名导出；签名 IPA 已在登记的 iPhone 13 上安装并启动。该描述文件于 2026-10-25 20:10:38（北京时间）到期。
 
 ## GitHub Release 草稿
 
 推送 `v*-ios.*` 标签后，GitHub Actions 使用仅该作业有效的仓库令牌建立 Release 草稿。草稿不会自动发布，也不会将未签名产物列为安装包。正式附件仍需完成 Apple 签名后上传。
+
+
+## 免费 Personal Team 真机测试
+
+免费账号使用 Xcode 直接签名安装到登记的个人设备，不能用于 Ad Hoc、TestFlight 或 App Store 分发。
+Personal Team 的开发描述文件有效期为 7 天，过期后需重新签名安装。
+Apple 官方说明：https://developer.apple.com/help/account/basics/about-your-developer-account
+
+```sh
+IOS_DEVELOPMENT_TEAM=你的TeamID IOS_DEVICE_ID=连接设备标识 npm run install:ios
+```
+
+首次运行会请求 Xcode 创建开发签名证书、App ID 和该设备的描述文件，需已在 Xcode 登录。
+iPhone 需完成信任配对、启用开发者模式并解锁。Team ID 与设备标识通过本地环境变量传入，不写进 Git。
+
+本次通过 Xcode `exportArchive` 的 `debugging` 方式正式导出签名 IPA，并对导出的 App 解包、验证签名、检查设备授权后安装启动。
+该 IPA 标记为 Personal Team 个人设备测试包，不承诺其他手机下载后可以安装。

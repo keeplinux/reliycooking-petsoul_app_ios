@@ -18,7 +18,8 @@
     "test:web": "playwright test",
     "verify:baseline": "node scripts/verify-baseline.mjs",
     "test:ios": "sh scripts/test-ios.sh",
-    "release:ios": "sh scripts/release-ios.sh"
+    "release:ios": "sh scripts/release-ios.sh",
+    "install:ios": "sh scripts/install-ios.sh"
   },
   "dependencies": {
     "@capacitor/android": "^8.3.3",
