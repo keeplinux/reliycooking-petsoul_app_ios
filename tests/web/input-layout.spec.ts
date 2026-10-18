@@ -17,7 +17,7 @@ for (const width of [320, 375, 390, 430]) {
     for (const height of [420, 844, 420, 844]) {
       await page.setViewportSize({ width, height })
       await name.focus()
-      const submit = page.getByRole('button', { name: '保存并生成示例形象' })
+      const submit = page.getByRole('button', { name: '上传并开始构建' })
       await submit.scrollIntoViewIfNeeded()
       await expect(submit).toBeInViewport()
       const bounds = await submit.boundingBox()

@@ -49,3 +49,7 @@ tests/ios/*.xcodeproj/
 
 playwright-report/
 test-results/
+
+# Per-device factory credentials and local firmware build output
+firmware/**/include/device_config.h
+firmware/**/.pio/

@@ -1,49 +1,141 @@
-import { useState } from 'react'
-import { ArrowRight, Boxes, Cat, Globe, Plus, QrCode, Radar } from 'lucide-react'
+import type { ReactNode } from 'react'
+import { ArrowRight, Globe, QrCode, Radar, Wifi } from 'lucide-react'
 import { useApp } from '../appContext'
 import { HomeScene } from '../components/HomeScene'
 import { LogoMark } from '../components/LogoMark'
+import { payloadFromDevice } from '../provisioning'
+import { HOTSPOT_SSID } from '../hotspot'
 
 export function Home() {
   const { navigate, devices, pets } = useApp()
-  const [panel, setPanel] = useState<'pets' | 'devices' | null>(null)
-  const bound = devices.filter((device) => device.status === 'bound')
-  const pending = devices.filter((device) => device.status !== 'bound')
+  const pendingDevices = devices.filter((device) => device.status === 'pending')
+
+  function openPendingDevice(deviceId: string) {
+    const device = pendingDevices.find((item) => item.id === deviceId)
+    if (!device) {
+      navigate({ name: 'hotspot' })
+      return
+    }
+    navigate({ name: 'provision', payload: payloadFromDevice(device), source: 'hotspot' })
+  }
+
   return (
-    <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden bg-black">
+    <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden">
       <div className="absolute inset-0">
-        <HomeScene pets={pets} devices={devices}
-          onCatClick={(index) => { const pet = pets[index]; navigate(pet ? { name: 'petProfile', petId: pet.id } : { name: 'petCapture' }) }}
-          onDeviceClick={(deviceId) => navigate({ name: 'device', deviceId })} />
+        <HomeScene
+          pets={pets}
+          devices={devices}
+          onCatClick={(petIndex) => {
+            const pet = pets[petIndex]
+            if (pet) {
+              navigate({ name: 'petProfile', petId: pet.id })
+              return
+            }
+            navigate({ name: 'petCapture' })
+          }}
+          onDeviceClick={(deviceId) => navigate({ name: 'device', deviceId })}
+        />
       </div>
-      <header className="absolute inset-x-0 top-0 z-10 flex items-center justify-between bg-linear-to-b from-black/70 to-transparent px-4 pb-4 safe-top">
-        <div className="flex items-center gap-2 text-white"><LogoMark size="sm" /><span className="brand-font font-semibold">硅宠场域</span></div>
-        <button type="button" onClick={() => navigate({ name: 'scan' })} className="flex min-h-11 items-center gap-2 rounded-xl bg-white/15 px-3 text-sm text-white"><QrCode size={18} /> 添加设备</button>
-      </header>
-      <div className="absolute inset-x-4 top-[112px] z-10 rounded-2xl border border-white/20 bg-black/50 p-3 text-white backdrop-blur">
-        <p className="m-0 text-xs text-amber-200">演示模式 · 数据与操作为本地模拟</p>
-        <p className="mb-1 mt-2 text-base font-semibold">{pets.length ? `${pets.length} 位伙伴，今日一起探索` : '欢迎来到你的宠物星球'}</p>
-        <p className="m-0 text-sm text-white/85">{pending.length ? `${pending.length} 台设备待绑定` : `${bound.length} 台演示设备已绑定`} · 真实监测尚未接入</p>
-        <div className="mt-3 grid grid-cols-2 gap-2">
-          <button onClick={() => setPanel('pets')} className="flex min-h-11 items-center justify-center gap-2 rounded-xl bg-white/15 text-sm"><Cat size={18} /> 我的宠物（{pets.length}）</button>
-          <button onClick={() => setPanel('devices')} className="flex min-h-11 items-center justify-center gap-2 rounded-xl bg-white/15 text-sm"><Boxes size={18} /> 我的设备（{devices.length}）</button>
+
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-[5] h-24 bg-linear-to-b from-black/40 to-transparent" />
+      <header className="pointer-events-none absolute inset-x-0 top-0 z-10 flex items-center justify-between px-4 pb-3 safe-top">
+        <div className="flex items-center gap-2 text-white">
+          <LogoMark size="sm" />
+          <span className="text-sm font-semibold [text-shadow:0_1px_6px_rgba(0,0,0,0.7)]">
+            硅宠场域
+          </span>
         </div>
-      </div>
-      <div className="absolute inset-x-4 bottom-[112px] text-center text-xs text-white/75">拖动探索星球，也可通过固定入口查看宠物与设备</div>
-      <nav className="absolute inset-x-0 bottom-0 z-10 grid grid-cols-3 bg-linear-to-t from-black/80 to-transparent text-white safe-bottom">
-        <button onClick={() => navigate({ name: 'mall' })} className="flex min-h-16 flex-col items-center justify-center gap-1 text-sm"><Radar size={20} />探针·产品</button>
-        <button onClick={() => navigate({ name: 'petCapture' })} className="flex min-h-16 flex-col items-center justify-center gap-1 text-sm"><Plus size={22} />添加宠物</button>
-        <button onClick={() => navigate({ name: 'settings' })} className="flex min-h-16 flex-col items-center justify-center gap-1 text-sm"><Globe size={20} />母舰·我的</button>
-      </nav>
-      {panel && <div className="absolute inset-0 z-30 flex items-end">
-        <button aria-label="关闭列表" onClick={() => setPanel(null)} className="absolute inset-0 bg-black/60" />
-        <section role="dialog" aria-modal="true" aria-label={panel === 'pets' ? '我的宠物' : '我的设备'} className="relative flex max-h-[75%] w-full flex-col rounded-t-3xl bg-white p-5 safe-bottom">
-          <div className="mb-3 flex items-center justify-between"><h2 className="m-0 text-lg">{panel === 'pets' ? '我的宠物' : '我的设备'}</h2><button onClick={() => setPanel(null)} className="min-h-11 px-3 text-sm">关闭</button></div>
-          <div className="min-h-0 overflow-y-auto">
-            {panel === 'pets' ? <>{pets.length === 0 && <p className="text-sm text-[#555]">还没有宠物档案，先为伙伴创建一份。</p>}{pets.map((pet) => <button key={pet.id} onClick={() => navigate({ name: 'petProfile', petId: pet.id })} className="mb-2 flex min-h-14 w-full items-center justify-between rounded-xl bg-[#f3f4f3] p-3 text-left"><span>{pet.name}<span className="block text-xs text-[#666]">{pet.breed || '品种待填写'}</span></span><ArrowRight size={18} /></button>)}<button onClick={() => navigate({ name: 'petCapture' })} className="mt-2 min-h-11 w-full rounded-xl bg-[#193e32] px-4 text-white">添加宠物</button></> : <>{devices.length === 0 && <p className="text-sm text-[#555]">暂无设备，可先体验添加流程。</p>}{devices.map((device) => <button key={device.id} onClick={() => navigate({ name: 'device', deviceId: device.id })} className="mb-2 flex min-h-14 w-full items-center justify-between rounded-xl bg-[#f3f4f3] p-3 text-left"><span>{device.name}<span className="block text-xs text-[#666]">{device.status === 'bound' ? '演示已绑定' : '待绑定'} · {device.sn}</span></span><ArrowRight size={18} /></button>)}<button onClick={() => navigate({ name: 'scan' })} className="mt-2 min-h-11 w-full rounded-xl bg-[#193e32] px-4 text-white">添加设备</button></>}
+        <div className="pointer-events-auto flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => navigate({ name: 'scan' })}
+            className="flex items-center gap-1.5 rounded-lg border border-white/25 bg-black/20 px-3 py-2 text-xs font-medium text-white backdrop-blur hover:bg-white/10"
+          >
+            <QrCode size={16} /> 扫码
+          </button>
+        </div>
+      </header>
+
+      {pendingDevices.length > 0 && (
+        <section className="absolute inset-x-4 z-10 rounded-xl border border-white/20 bg-white/95 p-3 shadow-lg shadow-black/20 backdrop-blur banner-top">
+          <div className="flex items-start gap-2.5">
+            <span className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full bg-amber-100 text-amber-600">
+              <Wifi size={15} />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="m-0 text-sm font-semibold">
+                发现 {pendingDevices.length} 台待配网设备
+              </p>
+              <p className="m-0 mt-0.5 text-xs leading-5 text-[#171717]/50">
+                通过 {HOTSPOT_SSID} 热点自动发现，点击即可手动配网
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-2.5 flex flex-col gap-2">
+            {pendingDevices.map((device) => (
+              <button
+                key={device.id}
+                type="button"
+                onClick={() => openPendingDevice(device.id)}
+                className="flex items-center justify-between rounded-lg bg-[#f7f7f8] px-3 py-2.5 text-left hover:bg-[#171717]/5"
+              >
+                <span className="min-w-0">
+                  <span className="block text-sm font-medium">{device.name}</span>
+                  <span className="block font-mono text-[10px] text-[#171717]/45">
+                    SN {device.sn}
+                  </span>
+                </span>
+                <span className="flex shrink-0 items-center gap-1 text-xs font-medium">
+                  去配网 <ArrowRight size={14} />
+                </span>
+              </button>
+            ))}
           </div>
         </section>
-      </div>}
+      )}
+
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[5] h-28 bg-linear-to-t from-black/50 to-transparent" />
+      <BottomNav />
     </div>
+  )
+}
+
+function BottomNav() {
+  const { navigate } = useApp()
+  return (
+    <nav className="pointer-events-none absolute inset-x-0 bottom-0 z-10 grid grid-cols-2 safe-bottom">
+      <NavButton
+        icon={<Radar size={20} />}
+        title="探针"
+        onClick={() => navigate({ name: 'mall' })}
+      />
+      <NavButton
+        icon={<Globe size={20} strokeWidth={1.8} />}
+        title="母舰"
+        onClick={() => navigate({ name: 'settings' })}
+      />
+    </nav>
+  )
+}
+
+function NavButton({
+  icon,
+  title,
+  onClick,
+}: {
+  icon: ReactNode
+  title: string
+  onClick: () => void
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="pointer-events-auto flex flex-col items-center gap-1.5 py-4 text-white hover:bg-white/10"
+    >
+      <span className="text-white">{icon}</span>
+      <span className="text-sm font-medium">{title}</span>
+    </button>
   )
 }

@@ -29,7 +29,7 @@ export function Mall() {
 
   return (
     <div className="relative flex min-h-0 flex-1 flex-col">
-      <TopBar title="探针·产品" onBack={() => navigate({ name: 'home' })} />
+      <TopBar title="探针" onBack={() => navigate({ name: 'home' })} />
       <main
         ref={scrollRef}
         onScroll={handleScroll}
@@ -41,7 +41,7 @@ export function Mall() {
             product={product}
             index={i}
             total={products.length}
-            onPurchase={(variant) => navigate({ name: 'purchase', productId: product.id, variant })}
+            onPurchase={() => navigate({ name: 'purchase', productId: product.id })}
           />
         ))}
       </main>
@@ -79,7 +79,7 @@ function ProductSlide({
   product: Product
   index: number
   total: number
-  onPurchase: (variant: number) => void
+  onPurchase: () => void
 }) {
   const [variant, setVariant] = useState(0)
   const variantRef = useRef<HTMLDivElement | null>(null)
@@ -184,10 +184,10 @@ function ProductSlide({
 
         <button
           type="button"
-          onClick={() => onPurchase(variant)}
+          onClick={onPurchase}
           className="mt-3 flex h-11 w-full items-center justify-center gap-1.5 rounded-lg bg-[#171717] text-sm font-medium text-white hover:bg-[#171717]/85"
         >
-          查看产品详情 <ChevronRight size={16} />
+          前往购买 <ChevronRight size={16} />
         </button>
 
         <p className="m-0 mt-3 text-center text-[11px] text-[#171717]/40">

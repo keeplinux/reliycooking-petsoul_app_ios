@@ -51,7 +51,7 @@ export function SettingsView() {
           >
             <span className="flex items-center gap-3">
               <Bell size={18} />
-              <span className="text-sm font-medium">消息通知偏好</span>
+              <span className="text-sm font-medium">消息通知</span>
             </span>
             <span
               className={`relative h-6 w-11 shrink-0 rounded-full transition ${
@@ -67,7 +67,6 @@ export function SettingsView() {
           </button>
         </section>
 
-        <p className="px-3 text-sm text-[#171717]/65">偏好仅保存在本机；系统推送通知尚未接入。</p>
         <section className="rounded-lg p-2">
           <p className="m-0 flex items-center gap-3 px-3 pt-2 pb-1 text-sm font-medium">
             <Radar size={18} className="shrink-0" /> 探针状态
@@ -78,13 +77,13 @@ export function SettingsView() {
             devices.map((device) => (
               <div key={device.id} className="rounded-lg px-3 py-3">
                 <div className="flex items-center justify-between gap-2">
-                  <button type="button" onClick={() => navigate({ name: 'device', deviceId: device.id })} className="min-w-0 flex-1 py-2 text-left" aria-label={`查看设备 ${device.name}`}>
+                  <div className="min-w-0">
                     <p className="m-0 text-sm font-medium">{device.name}</p>
                     <p className="m-0 mt-0.5 text-[11px] text-[#171717]/45">
                       {device.sn}
                       {device.wifiSsid ? ` · ${device.wifiSsid}` : ''}
                     </p>
-                  </button>
+                  </div>
                   <div className="flex shrink-0 items-center gap-2">
                     <span
                       className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${
@@ -152,7 +151,6 @@ export function SettingsView() {
           </div>
         </section>
 
-        <p className="px-3 text-sm text-[#171717]/65">退出后资料仍保存在本机，同账号重新登录可继续使用。</p>
         <button
           type="button"
           onClick={signOut}

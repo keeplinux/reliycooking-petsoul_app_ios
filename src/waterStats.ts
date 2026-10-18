@@ -13,7 +13,7 @@ export type PetWaterSeries = {
 export const periodPoints: Record<WaterStatPeriod, number> = {
   day: 24,
   week: 7,
-  month: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate(),
+  month: 30,
 }
 
 export const periodTabLabels: Record<WaterStatPeriod, string> = {
@@ -92,9 +92,9 @@ export function buildWaterStatPets(pets: Pet[]): PetWaterSeries[] {
       name: pet.name,
       color: statColors[index % statColors.length],
       series: {
-        day: dayBase.slice(0, new Date().getHours() + 1).map((value) => Math.round(value * scale)),
-        week: weekBase.slice(0, (new Date().getDay() + 6) % 7 + 1).map((value) => Math.round(value * scale)),
-        month: Array.from({ length: new Date().getDate() }, (_, index) => monthBase[index % monthBase.length]).map((value) => Math.round(value * scale)),
+        day: dayBase.map((value) => Math.round(value * scale)),
+        week: weekBase.map((value) => Math.round(value * scale)),
+        month: monthBase.map((value) => Math.round(value * scale)),
       },
     }
   })

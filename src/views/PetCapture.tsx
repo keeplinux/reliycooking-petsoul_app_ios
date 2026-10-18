@@ -5,9 +5,7 @@ import { Camera, Check, Image as ImageIcon, LoaderCircle, RotateCw, Upload, Vide
 import { useApp } from '../appContext'
 import { TopBar } from '../components/TopBar'
 import { buildPetModelSeed } from '../petModel'
-import { sceneLoop } from '../sceneLoop'
-import { deleteMedia, readMedia, writeMedia } from '../mediaStore'
-import type { Pet, PetGender, PetMedia } from '../nav'
+import type { PetGender } from '../nav'
 
 type BuildPhase = 'editing' | 'uploading' | 'building' | 'returning'
 type MediaMode = 'photos' | 'video'
@@ -15,9 +13,9 @@ type ViewSlot = 'front' | 'left' | 'right' | 'back'
 
 const buildPhaseLabel: Record<BuildPhase, string> = {
   editing: '',
-  uploading: '正在保存本机资料…',
-  building: '正在生成示例形象…',
-  returning: '正在完成保存…',
+  uploading: '正在上传资料…',
+  building: '正在识别品种并构建模型…',
+  returning: '模型回传中…',
 }
 
 /** 四视图引导顺序：模型连续正向转身（正 → 左 → 背 → 右），姿态角依次 +90° */
@@ -72,30 +70,15 @@ function compressImage(file: File): Promise<string> {
   })
 }
 
-type CaptureDraft = {
-  name: string; birthday: string; gender: PetGender; mode: MediaMode
-  views: Record<ViewSlot, string | null>; video?: Blob; captureIndex: number
-}
-
-export function PetCapture({ petId }: { petId?: string }) {
-  const { navigate, addPet, updatePet, pets, account } = useApp()
-  const original = pets.find((pet) => pet.id === petId)
-  const owner = account?.id ?? 'fixture'
-  const draftKey = `draft:${owner}:${petId ?? 'new'}`
-  const [draftReady, setDraftReady] = useState(false)
-  const [draftAttempt, setDraftAttempt] = useState(0)
-  const [saveStatus, setSaveStatus] = useState('正在读取本机草稿…')
-  const [error, setError] = useState<string | null>(null)
-  const [completed, setCompleted] = useState<Pet | null>(null)
-  const [videoFile, setVideoFile] = useState<Blob | undefined>()
-  const draftWriteRef = useRef<Promise<void>>(Promise.resolve())
+export function PetCapture() {
+  const { navigate, addPet } = useApp()
   const cameraRef = useRef<HTMLInputElement>(null)
   const albumRef = useRef<HTMLInputElement>(null)
   const videoRef = useRef<HTMLInputElement>(null)
   const pendingViewRef = useRef<ViewSlot>('front')
-  const [name, setName] = useState(original?.name ?? '')
-  const [birthday, setBirthday] = useState(original?.birthday ?? '')
-  const [gender, setGender] = useState<PetGender>(original?.gender ?? 'male')
+  const [name, setName] = useState('')
+  const [birthday, setBirthday] = useState('')
+  const [gender, setGender] = useState<PetGender>('male')
 
   const [mediaMode, setMediaMode] = useState<MediaMode>('photos')
   const [views, setViews] = useState<Record<ViewSlot, string | null>>({
@@ -116,55 +99,7 @@ export function PetCapture({ petId }: { petId?: string }) {
   /** 已录入的视图：3D 引导模型对应面被上色点亮 */
   const filledViews = captureOrder.filter((item) => views[item.key]).map((item) => item.key)
   const mediaReady = mediaMode === 'photos' ? photosReady : videoUrl !== null
-  const formReady = name.trim().length > 0 && mediaReady && draftReady
-
-  useEffect(() => {
-    let active = true
-    void readMedia<CaptureDraft>(draftKey).then((draft) => {
-      if (!active) return
-      if (draft) {
-        setName(draft.name); setBirthday(draft.birthday); setGender(draft.gender)
-        setMediaMode(draft.mode); setViews(draft.views); setCaptureIndex(draft.captureIndex)
-        if (draft.video) { setVideoFile(draft.video); setVideoUrl(URL.createObjectURL(draft.video)) }
-      }
-      setDraftReady(true)
-      setSaveStatus(draft ? '已恢复本机草稿' : '草稿将自动保存在本机')
-    }).catch(() => {
-      if (active) { setError('无法读取本机草稿，请释放存储空间后重试。'); setSaveStatus('草稿不可用') }
-    })
-    return () => { active = false }
-  }, [draftKey, draftAttempt])
-
-  useEffect(() => {
-    if (!draftReady || building || completed) return
-    const draft: CaptureDraft = { name, birthday, gender, mode: mediaMode, views, video: videoFile, captureIndex }
-    let active = true
-    const job = draftWriteRef.current.catch(() => {}).then(() => writeMedia(draftKey, draft))
-    draftWriteRef.current = job
-    void job.then(() => { if (active) setSaveStatus('草稿已保存在本机') }).catch(() => {
-      if (active) { setSaveStatus('草稿保存失败'); setError('草稿保存失败，请保留当前页面、释放存储空间后重试。') }
-    })
-    return () => { active = false }
-  }, [draftReady, name, birthday, gender, mediaMode, views, videoFile, captureIndex, draftKey, building, completed])
-
-  useEffect(() => () => { if (videoUrl) URL.revokeObjectURL(videoUrl) }, [videoUrl])
-
-  async function saveCurrentDraft() {
-    const draft: CaptureDraft = { name, birthday, gender, mode: mediaMode, views, video: videoFile, captureIndex }
-    const job = draftWriteRef.current.catch(() => {}).then(() => writeMedia(draftKey, draft))
-    draftWriteRef.current = job
-    await job
-    setSaveStatus('草稿已保存在本机')
-    setError(null)
-  }
-
-  async function leave() {
-    if (building) return
-    try {
-      if (draftReady) await saveCurrentDraft()
-      navigate({ name: 'home' })
-    } catch { setError('草稿尚未保存成功，请重试或释放存储空间。') }
-  }
+  const formReady = name.trim().length > 0 && mediaReady
 
   function pickPhoto(picker: 'camera' | 'album') {
     pendingViewRef.current = currentView.key
@@ -190,7 +125,7 @@ export function PetCapture({ petId }: { petId?: string }) {
       const shotIndex = captureOrder.findIndex((item) => item.key === slot)
       setCaptureIndex((shotIndex + 1) % captureOrder.length)
     } catch {
-      setError('照片读取失败，请重新选择清晰的 JPG 或 PNG 图片。')
+      // 读取失败保持该视图未采集
     }
   }
 
@@ -200,8 +135,6 @@ export function PetCapture({ petId }: { petId?: string }) {
     if (!file || !file.type.startsWith('video/')) {
       return
     }
-    if (file.size > 100 * 1024 * 1024) { setError('视频不能超过 100MB，请选择较短的环绕视频。'); return }
-    setVideoFile(file)
     setVideoUrl(URL.createObjectURL(file))
   }
 
@@ -213,46 +146,30 @@ export function PetCapture({ petId }: { petId?: string }) {
   }
 
   async function submit() {
-    if (!formReady || building) return
-    setError(null)
-    setPhase('uploading')
+    if (!formReady || building) {
+      return
+    }
+    setPhase('building')
     try {
-      await saveCurrentDraft()
-      const media: PetMedia = mediaMode === 'photos'
-        ? { kind: 'photos', front: views.front!, left: views.left!, right: views.right!, back: views.back! }
-        : { kind: 'video', url: videoUrl! }
-      const pet: Pet = {
-        id: original?.id ?? `pet-${crypto.randomUUID()}`, name: name.trim(), birthday, gender,
-        breed: original?.breed ?? '待填写', media,
+      await addPet({
+        id: `pet-${crypto.randomUUID()}`, name: name.trim(), birthday, gender,
+        breed: '待填写',
+        media: mediaMode === 'photos'
+          ? { kind: 'photos', front: views.front!, left: views.left!, right: views.right!, back: views.back! }
+          : { kind: 'video', url: videoUrl! },
         model: buildPetModelSeed({ name: name.trim(), birthday }),
-      }
-      if (videoFile && mediaMode === 'video') await writeMedia(`pet-video:${owner}:${pet.id}`, videoFile)
-      await (original ? updatePet(pet) : addPet(pet))
-      setCompleted(pet)
-      try { await deleteMedia(draftKey) } catch { /* Saved profile is authoritative; a stale draft is safe to retry. */ }
+      })
+      navigate({ name: 'home' })
     } catch {
-      setError('资料保存失败，照片和填写内容仍在当前页面，请释放存储空间后重试。')
+      window.alert('资料保存失败，请释放存储空间后重试。')
       setPhase('editing')
     }
   }
 
-  if (completed) return <>
-    <TopBar title="宠物档案已保存" onBack={() => navigate({ name: 'home' })} />
-    <main className="flex flex-1 flex-col items-center justify-center gap-5 overflow-y-auto p-6 safe-bottom">
-      <Check size={48} className="text-emerald-700" />
-      <h2 className="m-0 text-2xl">{completed.name}，欢迎加入星球</h2>
-      <p className="m-0 max-w-sm text-center text-sm leading-6 text-[#555]">资料已保存在本机。当前形象为示例模型，并非根据照片识别或云端重建的真实形象。</p>
-      <button className="min-h-12 w-full max-w-sm rounded-xl bg-[#193e32] text-white" onClick={() => navigate({ name: 'petProfile', petId: completed.id })}>查看宠物档案</button>
-      <button className="min-h-12 w-full max-w-sm rounded-xl border" onClick={() => navigate({ name: 'home' })}>返回首页</button>
-    </main>
-  </>
-
   return (
     <>
-      <TopBar title={original ? '重新采集形象' : '录入宠物数字形象'} onBack={() => { void leave() }} />
+      <TopBar title="录入宠物数字形象" onBack={() => navigate({ name: 'home' })} />
       <main className="flex min-h-0 w-full flex-1 flex-col items-center gap-4 overflow-y-auto p-4 safe-bottom">
-        <div className="w-full max-w-sm text-sm leading-6 text-[#555]"><p className="m-0">先采集照片或视频，再填写伙伴资料。当前仅生成示例模型，不会上传到服务器。</p><p role="status" className="m-0 text-xs">{saveStatus}</p></div>
-        {error && <p role="alert" className="w-full max-w-sm rounded-xl bg-amber-50 p-3 text-sm text-amber-900">{error}<button type="button" className="mt-2 block min-h-11 underline" onClick={() => { if (!draftReady) { setDraftAttempt((attempt) => attempt + 1); setError(null) } else { void saveCurrentDraft().catch(() => setError('保存仍未完成，请释放存储空间后再次重试。')) } }}>{draftReady ? '重试保存草稿' : '重试读取草稿'}</button></p>}
         {/* 采集模式切换 */}
         <div className="grid w-full max-w-sm grid-cols-2 gap-1 rounded-lg bg-[#171717]/5 p-1">
           <button
@@ -298,13 +215,12 @@ export function PetCapture({ petId }: { petId?: string }) {
                 disabled={building}
               />
               <span className="pointer-events-none absolute left-3 top-3 rounded-full bg-black/55 px-2.5 py-1 text-[11px] font-medium text-white">
-                {photosReady ? '4 / 4 · 已采集完成' : `${captureIndex + 1} / 4 · ${currentView.label}`}
+                {captureIndex + 1} / 4 · {currentView.label}
               </span>
               <span className="pointer-events-none absolute bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-white/85 px-3 py-1 text-[11px] text-[#171717]/60 shadow-sm">
                 {currentView.hint} · 点击模型拍摄
               </span>
             </div>
-            <button type="button" disabled={building || !draftReady} onClick={() => setSheetOpen(true)} className="mt-3 min-h-11 w-full rounded-xl bg-[#193e32] px-3 text-sm text-white">{photosReady ? '更换当前视图照片' : `采集${currentView.label}`}</button>
             {/* 进度缩略图：点击跳转到对应视图并直接弹出采集选项（添加/更换照片） */}
             <div className="mt-2 grid grid-cols-4 gap-2">
               {captureOrder.map((item, index) => {
@@ -414,7 +330,6 @@ export function PetCapture({ petId }: { petId?: string }) {
               onChange={(event) => setBirthday(event.target.value)}
               disabled={building}
               type="date"
-              max={`${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}-${String(new Date().getDate()).padStart(2, '0')}`}
               className="block appearance-none w-full min-w-0 rounded-lg border border-[#171717]/15 bg-white px-3 py-2.5 text-base text-[#171717] outline-none focus:border-[#171717]/40"
             />
           </label>
@@ -459,7 +374,7 @@ export function PetCapture({ petId }: { petId?: string }) {
             </>
           ) : (
             <>
-              <Upload size={18} /> 保存并生成示例形象
+              <Upload size={18} /> 上传并开始构建
             </>
           )}
         </button>
@@ -800,6 +715,7 @@ function CaptureStage({
     el.addEventListener('pointermove', onPointerMove)
     el.addEventListener('pointerup', onPointerUp)
 
+    let raf = 0
     const resize = () => {
       const width = mount.clientWidth
       const height = mount.clientHeight
@@ -812,18 +728,18 @@ function CaptureStage({
     const observer = new ResizeObserver(resize)
     observer.observe(mount)
 
-    const stopLoop = sceneLoop((time, reduced) => {
+    const tick = (time: number) => {
       const model = groupRef.current
       if (model) {
         // 姿态平滑过渡（指数缓出）+ 轻微待机浮动
-        model.rotation.y += (targetYawRef.current - model.rotation.y) * (reduced ? 1 : 0.08)
-        model.position.y = reduced ? 0 : Math.sin(time * 0.0016) * 0.015
+        model.rotation.y += (targetYawRef.current - model.rotation.y) * 0.08
+        model.position.y = Math.sin(time * 0.0016) * 0.015
       }
       // 上色动画推进（渐入点亮 / 渐出褪色）
       const anims = animsRef.current
       for (let i = anims.length - 1; i >= 0; i--) {
         const anim = anims[i]
-        const progress = reduced ? 1 : Math.min(1, (time - anim.start) / 300)
+        const progress = Math.min(1, (time - anim.start) / 300)
         const fillMat = anim.part.fill.material as THREE.MeshStandardMaterial
         const wireMat = anim.part.wire.material as THREE.MeshBasicMaterial
         if (anim.colored) {
@@ -849,10 +765,12 @@ function CaptureStage({
         }
       }
       renderer.render(scene, camera)
-    })
+      raf = requestAnimationFrame(tick)
+    }
+    tick(performance.now())
 
     return () => {
-      stopLoop()
+      cancelAnimationFrame(raf)
       observer.disconnect()
       el.removeEventListener('pointerdown', onPointerDown)
       el.removeEventListener('pointermove', onPointerMove)

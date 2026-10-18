@@ -40,7 +40,7 @@ function renderView(view: View): ReactNode {
     case 'mall':
       return <Mall />
     case 'purchase':
-      return <PurchaseView productId={view.productId} variant={view.variant} />
+      return <PurchaseView productId={view.productId} />
     case 'scan':
       return <ScanView expectProductId={view.expectProductId} />
     case 'hotspot':
@@ -54,7 +54,7 @@ function renderView(view: View): ReactNode {
     case 'device':
       return <DeviceView deviceId={view.deviceId} />
     case 'petCapture':
-      return <PetCapture petId={view.petId} />
+      return <PetCapture />
     case 'petProfile':
       return <PetProfileView petId={view.petId} />
     default:
@@ -225,7 +225,6 @@ function App() {
       <div className="app-shell relative flex flex-col bg-[#f7f7f8] text-[#171717]">
         {storageError && <div role="alert" className="shrink-0 bg-amber-100 p-3 text-sm text-amber-950">{storageError}<button className="ml-3 underline" onClick={() => setStorageError(null)}>知道了</button></div>}
         {renderView(view)}
-        {view.name !== 'home' && <div className="demo-banner">演示模式 · 数据与设备操作为本地模拟</div>}
       </div>
     </AppContext.Provider>
   )

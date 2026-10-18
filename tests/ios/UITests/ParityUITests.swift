@@ -11,25 +11,25 @@ final class ParityUITests: XCTestCase {
             XCTAssertTrue(login.isEnabled)
             login.tap()
         }
-        XCTAssertTrue(app.buttons["母舰·我的"].waitForExistence(timeout: 15))
+        XCTAssertTrue(app.buttons["母舰"].waitForExistence(timeout: 15))
         snapshot("01-home")
-        app.buttons["母舰·我的"].tap()
+        app.buttons["母舰"].tap()
         XCTAssertTrue(app.staticTexts["设置"].waitForExistence(timeout: 5))
         snapshot("02-settings")
         app.buttons["返回"].tap()
-        app.buttons["探针·产品"].tap()
+        app.buttons["探针"].tap()
         XCTAssertTrue(app.buttons.matching(identifier: "下一个型号").firstMatch.waitForExistence(timeout: 5))
         snapshot("03-mall")
         app.buttons.matching(identifier: "下一个型号").firstMatch.tap()
         snapshot("04-next-product")
         app.buttons["返回"].tap()
-        app.buttons["添加设备"].tap()
+        app.buttons["扫码"].tap()
         XCTAssertTrue(app.staticTexts["扫码配网"].waitForExistence(timeout: 5))
         snapshot("05-scan")
         app.buttons["返回"].tap()
         app.terminate()
         app.launch()
-        XCTAssertTrue(app.buttons["母舰·我的"].waitForExistence(timeout: 10), "登录状态应在重启后保留")
+        XCTAssertTrue(app.buttons["母舰"].waitForExistence(timeout: 10), "登录状态应在重启后保留")
         snapshot("06-relaunch")
     }
 
@@ -38,13 +38,13 @@ final class ParityUITests: XCTestCase {
         let app = XCUIApplication(bundleIdentifier: "com.pawlink.petwater")
         app.launch()
         if app.buttons["登录"].waitForExistence(timeout: 5) { app.buttons["登录"].tap() }
-        XCTAssertTrue(app.buttons["母舰·我的"].waitForExistence(timeout: 15))
+        XCTAssertTrue(app.buttons["母舰"].waitForExistence(timeout: 15))
         snapshot("keyboard-home")
-        app.buttons["添加宠物"].tap()
+        try tapDefaultCat(in: app)
+        if app.buttons["添加新宠物"].waitForExistence(timeout: 2) { app.buttons["添加新宠物"].tap() }
         let name = app.textFields["比如：咪咪"]
         XCTAssertTrue(name.waitForExistence(timeout: 8))
         for _ in 0..<3 where !name.isHittable { app.swipeUp() }
-        XCTAssertTrue(app.staticTexts["草稿已保存在本机"].waitForExistence(timeout: 10))
         let existing = name.value as? String ?? ""
         let originalName = existing == "比如：咪咪" ? "" : existing
         let originalWidth = name.frame.width
@@ -75,7 +75,7 @@ final class ParityUITests: XCTestCase {
             XCTAssertEqual(name.frame.width, originalWidth, accuracy: 2)
             snapshot("keyboard-dismissed-\(round)")
         }
-        let submit = app.buttons["保存并生成示例形象"]
+        let submit = app.buttons["上传并开始构建"]
         for _ in 0..<3 where submit.frame.maxY > app.frame.maxY { app.swipeUp() }
         XCTAssertGreaterThan(submit.frame.height, 0)
         XCTAssertGreaterThanOrEqual(submit.frame.minY, 0)
@@ -84,8 +84,17 @@ final class ParityUITests: XCTestCase {
         app.buttons["返回"].tap()
     }
 
-    // The 3D cat moves and the owner can rotate the planet; a fixed tap misses it.
     private func tapDefaultCat(in app: XCUIApplication) throws {
+        for _ in 0..<6 {
+            try tapDefaultCatOnce(in: app)
+            if app.buttons["添加新宠物"].waitForExistence(timeout: 1) || app.textFields["比如：咪咪"].waitForExistence(timeout: 1) { return }
+            if app.buttons["返回"].exists { app.buttons["返回"].tap() }
+        }
+        XCTFail("Moving cat could not be reached for the keyboard check")
+    }
+
+    // The 3D cat moves and the owner can rotate the planet; a fixed tap misses it.
+    private func tapDefaultCatOnce(in app: XCUIApplication) throws {
         let image = XCUIScreen.main.screenshot().image.cgImage!
         let width = image.width, height = image.height
         var bytes = [UInt8](repeating: 0, count: width * height * 4)

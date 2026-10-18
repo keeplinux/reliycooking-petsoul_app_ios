@@ -18,19 +18,17 @@ import {
 import { useApp } from '../appContext'
 import { TopBar } from '../components/TopBar'
 import { products } from '../catalog'
-import { scanRecognizeMs } from '../config'
+import { scanDeviceQr, readQrImage } from '../platform/scanner'
+import { connectDevice, disconnectDevice, provisionDevice } from '../platform/hardware'
 import { HOTSPOT_SSID } from '../hotspot'
 import {
   bleSteps,
-  buildProvisionResult,
   hotspotSteps,
-  isFiveGhzSsid,
   makeFailure,
+  isFiveGhzSsid,
   provisionSteps,
-  randomRssi,
-  runSimSteps,
-  simulateQrRecognition,
   sourceLabel,
+  parseQrPayload,
 } from '../provisioning'
 import type { ProvisionFailure, ProvisionResult, QrPayload } from '../provisioning'
 import type { ProvisionSource } from '../nav'
@@ -49,7 +47,7 @@ type Phase =
   | { name: 'success'; payload: QrPayload; result: ProvisionResult }
   | { name: 'error'; failure: ProvisionFailure; payload: QrPayload }
 
-const scanLabels = ['扫码识别', '连接设备', 'WiFi 配网', '绑定完成']
+const scanLabels = ['扫码识别', 'BLE 连接', 'WiFi 配网', '绑定完成']
 const hotspotLabels = ['热点发现', '会话校验', 'WiFi 配网', '绑定完成']
 
 export function ScanView({
@@ -72,7 +70,8 @@ export function ScanView({
       : { name: 'ble', payload: initialPayload }
   })
   const [stepIndex, setStepIndex] = useState(0)
-  const [rssi, setRssi] = useState(-52)
+  const [rssi, setRssi] = useState(0)
+  const [scanError, setScanError] = useState<string | null>(null)
   const [recognizing, setRecognizing] = useState(false)
   const [ssid, setSsid] = useState('')
   const [password, setPassword] = useState('')
@@ -81,11 +80,11 @@ export function ScanView({
   const [fallbackPrompt, setFallbackPrompt] = useState(false)
   // 本次扫码会话开始前设备是否已绑定（用于成功页「更新绑定信息」提示）
   const [ownedAtSession, setOwnedAtSession] = useState(false)
-  const recognizeTimer = useRef<number | undefined>(undefined)
+  const activeRef = useRef(true)
 
   const labels = source === 'hotspot' ? hotspotLabels : scanLabels
 
-  useEffect(() => () => window.clearTimeout(recognizeTimer.current), [])
+  useEffect(() => { activeRef.current = true; return () => { activeRef.current = false; void disconnectDevice() } }, [])
 
   /** 进入失败态；扫码通道失败时主动提示改用保底热点直连 */
   const fail = useCallback(
@@ -113,43 +112,29 @@ export function ScanView({
       })
       return undefined
     }
+    const controller = new AbortController()
+    const reportFailure = (error: unknown, stage: 'ble' | 'provision' | 'hotspot', payload: QrPayload) => {
+      if (controller.signal.aborted) return
+      const failure = makeFailure(stage === 'ble' ? 'BLE_NO_DEVICE' : stage === 'hotspot' ? 'HOTSPOT_NOT_FOUND' : 'DEVICE_NO_RESPONSE')
+      fail({ ...failure, stage, message: error instanceof Error ? error.message : '设备通信失败，请重试', suggestHotspot: false }, payload)
+    }
     if (phase.name === 'ble') {
-      return runSimSteps(bleSteps, {
-        onStep: setStepIndex,
-        onDone: () => setPhase({ name: 'wifi', payload: phase.payload }),
-        onError: (failure) => fail(failure, phase.payload),
-      })
+      void connectDevice(phase.payload, controller.signal, setStepIndex).then((signal) => {
+        if (!controller.signal.aborted) { setRssi(signal); setPhase({ name: 'wifi', payload: phase.payload }) }
+      }).catch((error: unknown) => reportFailure(error, 'ble', phase.payload))
+    } else if (phase.name === 'hotspot') {
+      void Promise.resolve().then(() => reportFailure(new Error('当前固件协议使用蓝牙安全配网，请重新扫描机身二维码。热点直连协议尚未实现。'), 'hotspot', phase.payload))
+    } else if (phase.name === 'provision') {
+      void provisionDevice(phase.payload, phase.ssid, password, controller.signal, setStepIndex).then((result) => {
+        if (!controller.signal.aborted) setPhase({ name: 'success', payload: phase.payload, result })
+      }).catch((error: unknown) => reportFailure(error, 'provision', phase.payload))
     }
-    if (phase.name === 'hotspot') {
-      return runSimSteps(hotspotSteps, {
-        onStep: setStepIndex,
-        onDone: () => setPhase({ name: 'wifi', payload: phase.payload }),
-        onError: (failure) => fail(failure, phase.payload),
-      })
-    }
-    if (phase.name === 'provision') {
-      // 设备固件无法加入 5GHz 频段，属于真实硬件限制
-      const failure = isFiveGhzSsid(phase.ssid) ? makeFailure('WIFI_UNSUPPORTED_BAND') : null
-      return runSimSteps(
-        provisionSteps,
-        {
-          onStep: setStepIndex,
-          onDone: () =>
-            setPhase({
-              name: 'success',
-              payload: phase.payload,
-              result: buildProvisionResult(phase.ssid),
-            }),
-          onError: (next) => fail(next, phase.payload),
-        },
-        failure,
-      )
-    }
-    return undefined
-  }, [phase, fail, addDevice, source])
+    return () => controller.abort()
+  }, [phase, fail, addDevice, source, password])
+
 
   function beginSession(payload: QrPayload) {
-    setRssi(randomRssi())
+    setRssi(0)
     setStepIndex(0)
     setFallbackPrompt(false)
     // 快照会话开始前的绑定状态：成功页的「已在设备列表」提示不受本次会话写入影响
@@ -157,25 +142,29 @@ export function ScanView({
     setPhase(source === 'hotspot' ? { name: 'hotspot', payload } : { name: 'ble', payload })
   }
 
-  function startRecognize() {
-    if (recognizing) {
-      return
-    }
-    setRecognizing(true)
-    recognizeTimer.current = window.setTimeout(() => {
-      setRecognizing(false)
-      beginSession(simulateQrRecognition(expectProductId))
-    }, scanRecognizeMs)
+  async function startRecognize(file?: File) {
+    if (recognizing) return
+    setRecognizing(true); setScanError(null)
+    try {
+      const raw = file ? await readQrImage(file) : await scanDeviceQr()
+      if (!activeRef.current) return
+      const payload = parseQrPayload(raw)
+      if (!payload) throw new Error('这不是有效的硅宠设备二维码，请使用配套固件生成的机身二维码')
+      if (expectProductId && payload.productId !== expectProductId) throw new Error('二维码型号与当前设备不匹配')
+      beginSession(payload)
+    } catch (error) {
+      if (activeRef.current) setScanError(error instanceof Error ? error.message : '扫码失败，请重试')
+    } finally { if (activeRef.current) setRecognizing(false) }
   }
 
   function submitWifi(payload: QrPayload) {
     const trimmedSsid = ssid.trim()
-    if (!trimmedSsid) {
-      setWifiError('请输入 WiFi 名称')
+    if (!trimmedSsid || new TextEncoder().encode(trimmedSsid).length > 32) {
+      setWifiError('请输入有效的 WiFi 名称（不超过 32 字节）')
       return
     }
-    if (password.length < 8) {
-      setWifiError('WiFi 密码至少 8 位')
+    if (password.length < 8 || new TextEncoder().encode(password).length > 63) {
+      setWifiError('WiFi 密码应为 8–63 字节')
       return
     }
     setWifiError(null)
@@ -185,6 +174,7 @@ export function ScanView({
   }
 
   function resetWizard() {
+    void disconnectDevice()
     setPhase({ name: 'scan' })
     setRecognizing(false)
     setSsid('')
@@ -236,8 +226,9 @@ export function ScanView({
       <TopBar title={source === 'hotspot' ? '保底配网' : '扫码配网'} onBack={handleBack} />
       <StepBar labels={labels} current={wizardIndex()} completed={phase.name === 'success'} />
       <main className="flex flex-1 flex-col items-center gap-4 overflow-y-auto p-4 safe-bottom">
+        {scanError && <p role="alert" className="m-0 text-sm text-red-800">{scanError}</p>}
         {phase.name === 'scan' && (
-          <ScanPanel recognizing={recognizing} onStart={startRecognize} expectProductId={expectProductId} />
+          <ScanPanel recognizing={recognizing} onStart={() => { void startRecognize() }} onImage={(file) => { void startRecognize(file) }} expectProductId={expectProductId} />
         )}
         {phase.name === 'ble' && (
           <SessionPanel
@@ -376,10 +367,12 @@ function StepBar({
 function ScanPanel({
   recognizing,
   onStart,
+  onImage,
   expectProductId,
 }: {
   recognizing: boolean
   onStart: () => void
+  onImage: (file: File) => void
   expectProductId?: string
 }) {
   const fileRef = useRef<HTMLInputElement>(null)
@@ -431,7 +424,8 @@ function ScanPanel({
         hidden
         onChange={(event) => {
           if (event.target.files?.length) {
-            onStart()
+            onImage(event.target.files[0])
+            event.target.value = ''
           }
         }}
       />
@@ -517,7 +511,7 @@ function WifiPanel({
         <span className="h-2 w-2 shrink-0 rounded-full bg-emerald-500" />
         <span className="font-medium">{product?.name ?? '设备'}</span>
         <span className="text-xs text-[#171717]/45">
-          {source === 'hotspot' ? '热点会话已建立' : '模拟连接完成'}
+          {source === 'hotspot' ? '热点会话已建立' : 'BLE 已连接'}
         </span>
       </div>
 
@@ -652,9 +646,9 @@ function SuccessPanel({
         <CircleCheckBig size={30} />
       </span>
       <div className="text-center">
-        <h2 className="m-0 text-base font-semibold">演示绑定完成</h2>
+        <h2 className="m-0 text-base font-semibold">配网并绑定成功</h2>
         <p className="m-0 mt-1 text-xs text-[#171717]/45">
-          {product?.name ?? '设备'} 已保存到本机演示设备列表，尚未连接真实硬件
+          {product?.name ?? '设备'} 已确认联网并保存在本机设备列表
         </p>
       </div>
 

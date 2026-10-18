@@ -1,6 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { hotspotProbeMs, simulateHardware } from './config'
-import { randomRssi, tokenForSn } from './provisioning'
 
 /**
  * 配网保底通道（AP 直连模式）
@@ -56,19 +54,19 @@ export async function probeHotspotGateway(): Promise<HotspotDevice[]> {
       return []
     }
     const data = (await response.json()) as Partial<HotspotDevice>
-    if (typeof data.sn !== 'string' || typeof data.productId !== 'string') {
+    if (typeof data.sn !== 'string' || typeof data.productId !== 'string' || typeof data.token !== 'string' || !/^[a-f0-9]{64}$/i.test(data.token)) {
       return []
     }
     return [
       {
         sn: data.sn,
         productId: data.productId,
-        mac: typeof data.mac === 'string' ? data.mac : 'A4:C1:38:00:00:00',
-        token: typeof data.token === 'string' ? data.token : tokenForSn(data.sn),
+        mac: typeof data.mac === 'string' ? data.mac : '',
+        token: data.token,
         ssid: typeof data.ssid === 'string' ? data.ssid : HOTSPOT_SSID,
         gateway: HOTSPOT_GATEWAY,
         firmware: typeof data.firmware === 'string' ? data.firmware : 'unknown',
-        rssi: typeof data.rssi === 'number' ? data.rssi : randomRssi(),
+        rssi: typeof data.rssi === 'number' ? data.rssi : 0,
       },
     ]
   } catch {
@@ -76,29 +74,8 @@ export async function probeHotspotGateway(): Promise<HotspotDevice[]> {
   }
 }
 
-const simDevice = {
-  sn: 'PF24060001',
-  productId: 'smart-water',
-  mac: 'A4:C1:38:5D:2E:9B',
-  firmware: 'v1.4.2',
-}
-
-/** 发现处于保底模式的设备（未接入设备侧时返回一台模拟设备） */
+/** Only return devices actually discovered through the configured AP endpoint. */
 export async function discoverHotspotDevices(): Promise<HotspotDevice[]> {
-  if (simulateHardware) {
-    await new Promise((resolve) => {
-      window.setTimeout(resolve, hotspotProbeMs)
-    })
-    return [
-      {
-        ...simDevice,
-        token: tokenForSn(simDevice.sn),
-        ssid: HOTSPOT_SSID,
-        gateway: HOTSPOT_GATEWAY,
-        rssi: randomRssi(),
-      },
-    ]
-  }
   return probeHotspotGateway()
 }
 

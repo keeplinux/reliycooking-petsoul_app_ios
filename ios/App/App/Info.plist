@@ -45,6 +45,8 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>用于连接宠物智能设备并安全配置 WiFi</string>
 	<key>NSCameraUsageDescription</key>
 	<string>用于拍摄宠物照片、头像及扫描设备二维码</string>
 	<key>NSPhotoLibraryUsageDescription</key>

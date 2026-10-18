@@ -1,7 +1,6 @@
 import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import { sceneLoop } from '../sceneLoop'
 import type { Device, DeviceKind, Pet } from '../nav'
 
 const PLANET_RADIUS = 2.4
@@ -274,9 +273,7 @@ export function HomeScene({
       const dist = camera.position.distanceTo(controls.target)
       const span = Math.max(0.001, MAX_DISTANCE - composeAnchor)
       const ratio = THREE.MathUtils.clamp((MAX_DISTANCE - dist) / span, 0, 1)
-      // Reserve the upper card area while keeping the pets in view on short screens.
-      const offset = height * COMPOSE_FACTOR + Math.max(150, 360 - height * 0.22)
-      camera.setViewOffset(width, height, 0, -offset * ratio, width, height)
+      camera.setViewOffset(width, height, 0, -height * COMPOSE_FACTOR * ratio, width, height)
     }
 
     const resize = () => {
@@ -294,18 +291,18 @@ export function HomeScene({
     requestAnimationFrame(resize)
 
     let lastTime = performance.now()
-    const stopLoop = sceneLoop((_time, reduced) => {
+    renderer.setAnimationLoop(() => {
       const now = performance.now()
       const dt = Math.min(0.05, (now - lastTime) / 1000)
       lastTime = now
       const state = sceneRef.current
-      if (state && !reduced) {
+      if (state) {
         const time = now / 1000
         state.cats.forEach((cat) => updateCat(cat, dt, time, state.hasWater))
       }
       controls.update()
       // 松手后星球按惯性滑行并逐帧减速，模拟真实转球手感
-      if (!dragging && !reduced) {
+      if (!dragging) {
         rotatePlanet(inertiaX, inertiaY)
         inertiaX *= 0.92
         inertiaY *= 0.92
@@ -329,7 +326,7 @@ export function HomeScene({
     }
 
     return () => {
-      stopLoop()
+      renderer.setAnimationLoop(null)
       window.clearTimeout(saveViewTimer)
       controls.dispose()
       resizeObserver.disconnect()

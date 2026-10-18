@@ -7,7 +7,7 @@ export function TopBar({ title, onBack }: { title: string; onBack: () => void })
         type="button"
         onClick={onBack}
         aria-label="返回"
-        className="grid h-11 w-11 place-items-center rounded-full text-[#171717] hover:bg-[#171717]/5"
+        className="grid h-9 w-9 place-items-center rounded-full text-[#171717] hover:bg-[#171717]/5"
       >
         <ArrowLeft size={19} />
       </button>
