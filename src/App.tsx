@@ -179,7 +179,7 @@ function App() {
 
   return (
     <AppContext.Provider value={api}>
-      <div className="relative flex h-dvh flex-col bg-[#f7f7f8] text-[#171717]">
+      <div className="app-shell relative flex flex-col bg-[#f7f7f8] text-[#171717]">
         {renderView(view)}
       </div>
     </AppContext.Provider>

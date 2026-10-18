@@ -181,7 +181,7 @@ export function PetCapture() {
   return (
     <>
       <TopBar title="录入宠物数字形象" onBack={() => navigate({ name: 'home' })} />
-      <main className="flex flex-1 flex-col items-center gap-4 overflow-y-auto p-4 safe-bottom">
+      <main className="flex min-h-0 w-full flex-1 flex-col items-center gap-4 overflow-y-auto p-4 safe-bottom">
         {/* 采集模式切换 */}
         <div className="grid w-full max-w-sm grid-cols-2 gap-1 rounded-lg bg-[#171717]/5 p-1">
           <button
@@ -327,7 +327,11 @@ export function PetCapture() {
               disabled={building}
               maxLength={12}
               placeholder="比如：咪咪"
-              className="rounded-lg border border-[#171717]/15 bg-white px-3 py-2.5 text-sm text-[#171717] outline-none placeholder:text-[#171717]/30 focus:border-[#171717]/40"
+              enterKeyHint="done"
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' && !event.nativeEvent.isComposing) event.currentTarget.blur()
+              }}
+              className="w-full min-w-0 rounded-lg border border-[#171717]/15 bg-white px-3 py-2.5 text-base text-[#171717] outline-none placeholder:text-[#171717]/30 focus:border-[#171717]/40"
             />
           </label>
 
@@ -338,7 +342,7 @@ export function PetCapture() {
               onChange={(event) => setBirthday(event.target.value)}
               disabled={building}
               type="date"
-              className="rounded-lg border border-[#171717]/15 bg-white px-3 py-2.5 text-sm text-[#171717] outline-none focus:border-[#171717]/40"
+              className="block appearance-none w-full min-w-0 rounded-lg border border-[#171717]/15 bg-white px-3 py-2.5 text-base text-[#171717] outline-none focus:border-[#171717]/40"
             />
           </label>
 

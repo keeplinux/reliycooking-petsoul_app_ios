@@ -52,5 +52,19 @@
     "public/products/pet-tracker.svg": "3acb48fc1111737a9eccd67aa1b262fe0dfdf2673fc5f39e0c1b950a87f6ceca",
     "public/products/smart-feeder.svg": "301076014f6f86683b63def433734068ea71781a20de661c6460f69dc5d8316c",
     "public/products/smart-water.svg": "61ce71b1d68a2a017059900cf97ac27bd35480a31f38683e50e81697ab502947"
+  },
+  "intentionalChanges": {
+    "src/App.tsx": {
+      "sha256": "40adf8e0313d1787bcfe3c800b12921fcfde6a70025524ae9b2ab71799ea9fdd",
+      "reason": "v1.3.17: prevent focus zoom and bound the keyboard-resized form layout"
+    },
+    "src/index.css": {
+      "sha256": "b3e57c621ed983010bdc61a950cbb88d83da834500f473a0f2409d2ac5373ee3",
+      "reason": "v1.3.17: prevent focus zoom and bound the keyboard-resized form layout"
+    },
+    "src/views/PetCapture.tsx": {
+      "sha256": "793e397b974b90c816d61a296c171d2882200f3a191405ef05b46917c9c7f89b",
+      "reason": "v1.3.17: prevent focus zoom and bound the keyboard-resized form layout"
+    }
   }
 }

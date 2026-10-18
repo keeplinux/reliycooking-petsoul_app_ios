@@ -33,7 +33,28 @@
 html,
 body,
 #root {
+  width: 100%;
   height: 100%;
+  overflow: hidden;
+}
+
+/* Follow the native WebView frame when the keyboard resizes it. */
+.app-shell {
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Small form text triggers iPhone focus zoom; keep editing controls readable.
+   Keep pinch-to-zoom available instead of restricting the viewport meta tag. */
+input:not([type="hidden"]):not([type="file"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="button"]):not([type="submit"]):not([type="reset"]),
+textarea,
+select {
+  min-width: 0;
+  max-width: 100%;
+  font-size: max(16px, 1em);
 }
 
 body {
