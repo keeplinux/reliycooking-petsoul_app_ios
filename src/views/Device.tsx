@@ -115,13 +115,12 @@ function buildRecordDays(pets: Pet[]): RecordDay[] {
 }
 
 export function DeviceView({ deviceId }: { deviceId: string }) {
-  const { navigate, devices, pets } = useApp()
+  const { navigate, devices, pets, updateDevice } = useApp()
   const device = devices.find((item) => item.id === deviceId)
   // 设备数据按实际录入的宠物生成（数量一致；未录入时为空数据）
   const data = useMemo(() => buildSmartWaterData(pets), [pets])
   const recordDays = useMemo(() => buildRecordDays(pets), [pets])
-  const [flowOn, setFlowOn] = useState(data.flowEnabled)
-  const [lightOn, setLightOn] = useState(data.lightEnabled)
+
 
   if (!device) {
     return (
@@ -212,15 +211,17 @@ export function DeviceView({ deviceId }: { deviceId: string }) {
               <Metric
                 label="水质"
                 value={formatMetric(data.waterQualityPercent, '%')}
-                sub={data.waterQualityText ?? undefined}
+                sub="示例指标，非实际检测"
               />
             </div>
 
             <section className="py-1">
-              <ToggleRow label="流动水" value={flowOn} onChange={setFlowOn} />
-              <ToggleRow label="氛围灯" value={lightOn} onChange={setLightOn} />
+              <p className="mb-2 text-sm text-[#171717]/65">演示开关 · 仅保存本机状态，不会下发设备指令</p>
+              <ToggleRow label="流动水" value={device.flowEnabled ?? data.flowEnabled} onChange={(value) => updateDevice(device.id, { flowEnabled: value })} />
+              <ToggleRow label="氛围灯" value={device.lightEnabled ?? data.lightEnabled} onChange={(value) => updateDevice(device.id, { lightEnabled: value })} />
             </section>
 
+            <p className="text-sm text-[#171717]/65">画面与历史时间轴为演示素材，非实时摄像或真实录像。</p>
             <CameraSection recordDays={recordDays} />
           </>
         ) : device.kind !== 'water' ? (
@@ -249,7 +250,7 @@ function CameraSection({ recordDays }: { recordDays: RecordDay[] }) {
         <Video size={26} className="mx-auto text-[#171717]/25" />
         <p className="m-0 mt-2 text-sm font-medium text-[#171717]/60">暂无饮水录像</p>
         <p className="m-0 mt-1 text-xs text-[#171717]/45">
-          录入宠物数字形象后，饮水舱将自动记录宠物的饮水片段
+          录入宠物数字形象后，可预览示例片段；真实录像尚未接入
         </p>
       </section>
     )
@@ -260,7 +261,7 @@ function CameraSection({ recordDays }: { recordDays: RecordDay[] }) {
       <div className="mb-3 flex items-center justify-end">
         <div className="grid grid-cols-2 rounded-lg bg-[#171717]/5 p-0.5 text-xs">
           <TabButton active={tab === 'live'} onClick={() => setTab('live')}>
-            实时
+            实时（未接入）
           </TabButton>
           <TabButton
             active={tab === 'history'}
@@ -327,7 +328,7 @@ function LiveView() {
   return (
     <div className="relative flex aspect-video items-center justify-center overflow-hidden rounded-lg bg-[#171717]">
       <span className="absolute left-3 top-3 flex items-center gap-1.5 rounded-full bg-white/90 px-2 py-1 text-[10px] font-medium text-[#171717]">
-        <span className="h-1.5 w-1.5 rounded-full bg-red-500" /> 实时
+        <span className="h-1.5 w-1.5 rounded-full bg-red-500" /> 实时（未接入）
       </span>
       <Camera size={38} className="text-white/60" />
     </div>

@@ -11,25 +11,25 @@ final class ParityUITests: XCTestCase {
             XCTAssertTrue(login.isEnabled)
             login.tap()
         }
-        XCTAssertTrue(app.buttons["母舰"].waitForExistence(timeout: 15))
+        XCTAssertTrue(app.buttons["母舰·我的"].waitForExistence(timeout: 15))
         snapshot("01-home")
-        app.buttons["母舰"].tap()
+        app.buttons["母舰·我的"].tap()
         XCTAssertTrue(app.staticTexts["设置"].waitForExistence(timeout: 5))
         snapshot("02-settings")
         app.buttons["返回"].tap()
-        app.buttons["探针"].tap()
+        app.buttons["探针·产品"].tap()
         XCTAssertTrue(app.buttons.matching(identifier: "下一个型号").firstMatch.waitForExistence(timeout: 5))
         snapshot("03-mall")
         app.buttons.matching(identifier: "下一个型号").firstMatch.tap()
         snapshot("04-next-product")
         app.buttons["返回"].tap()
-        app.buttons["扫码"].tap()
+        app.buttons["添加设备"].tap()
         XCTAssertTrue(app.staticTexts["扫码配网"].waitForExistence(timeout: 5))
         snapshot("05-scan")
         app.buttons["返回"].tap()
         app.terminate()
         app.launch()
-        XCTAssertTrue(app.buttons["母舰"].waitForExistence(timeout: 10), "登录状态应在重启后保留")
+        XCTAssertTrue(app.buttons["母舰·我的"].waitForExistence(timeout: 10), "登录状态应在重启后保留")
         snapshot("06-relaunch")
     }
 
@@ -38,15 +38,15 @@ final class ParityUITests: XCTestCase {
         let app = XCUIApplication(bundleIdentifier: "com.pawlink.petwater")
         app.launch()
         if app.buttons["登录"].waitForExistence(timeout: 5) { app.buttons["登录"].tap() }
-        XCTAssertTrue(app.buttons["母舰"].waitForExistence(timeout: 15))
+        XCTAssertTrue(app.buttons["母舰·我的"].waitForExistence(timeout: 15))
         snapshot("keyboard-home")
-        try tapDefaultCat(in: app)
-        if app.buttons["添加新宠物"].waitForExistence(timeout: 2) {
-            app.buttons["添加新宠物"].tap()
-        }
+        app.buttons["添加宠物"].tap()
         let name = app.textFields["比如：咪咪"]
         XCTAssertTrue(name.waitForExistence(timeout: 8))
         for _ in 0..<3 where !name.isHittable { app.swipeUp() }
+        XCTAssertTrue(app.staticTexts["草稿已保存在本机"].waitForExistence(timeout: 10))
+        let existing = name.value as? String ?? ""
+        let originalName = existing == "比如：咪咪" ? "" : existing
         let originalWidth = name.frame.width
         XCTAssertGreaterThan(originalWidth, 0)
         for round in 1...2 {
@@ -63,6 +63,11 @@ final class ParityUITests: XCTestCase {
             XCTAssertGreaterThanOrEqual(name.frame.minX, -1)
             XCTAssertLessThanOrEqual(name.frame.maxX, app.frame.width + 1)
             snapshot("keyboard-visible-\(round)")
+            // Restore the owner's draft before leaving the form.
+            let currentName = name.value as? String ?? ""
+            name.tap()
+            if !currentName.isEmpty { app.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: currentName.count)) }
+            if !originalName.isEmpty { app.typeText(originalName) }
             let done = app.keyboards.buttons.matching(NSPredicate(format: "label IN %@", ["Done", "done", "完成", "Return", "return"])).firstMatch
             XCTAssertTrue(done.waitForExistence(timeout: 5))
             done.tap()
@@ -70,7 +75,7 @@ final class ParityUITests: XCTestCase {
             XCTAssertEqual(name.frame.width, originalWidth, accuracy: 2)
             snapshot("keyboard-dismissed-\(round)")
         }
-        let submit = app.buttons["上传并开始构建"]
+        let submit = app.buttons["保存并生成示例形象"]
         for _ in 0..<3 where submit.frame.maxY > app.frame.maxY { app.swipeUp() }
         XCTAssertGreaterThan(submit.frame.height, 0)
         XCTAssertGreaterThanOrEqual(submit.frame.minY, 0)

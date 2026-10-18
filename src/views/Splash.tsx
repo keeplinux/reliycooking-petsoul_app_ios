@@ -78,13 +78,13 @@ export function Splash() {
             <MethodButton
               active={method === 'phone'}
               icon={<Smartphone size={17} />}
-              title="本机手机号"
+              title="手机号体验"
               onClick={() => selectMethod('phone')}
             />
             <MethodButton
               active={method === 'wechat'}
               icon={<MessageCircle size={17} />}
-              title="微信账户"
+              title="微信号体验"
               onClick={() => selectMethod('wechat')}
             />
           </div>
@@ -93,15 +93,15 @@ export function Splash() {
             {detection === null ? (
               <>
                 <LoaderCircle size={14} className="animate-spin" />
-                正在自动检索账号
+                正在准备演示账号
               </>
             ) : detection[method] ? (
               <>
                 <Check size={14} className="text-emerald-700" />
-                已自动读取 {maskAccount(method, detection[method] as string)}
+                演示账号 {maskAccount(method, detection[method] as string)}
               </>
             ) : (
-              '未检索到账号，请手动输入'
+              '请输入演示账号，仅用于本机资料区分'
             )}
           </div>
 
@@ -125,6 +125,7 @@ export function Splash() {
           {error && <p className="m-0 text-xs text-[#b3261e]">{error}</p>}
         </section>
 
+        <p className="m-0 text-sm leading-6 text-[#171717]/70">当前为本地体验版，无需验证码，不会读取你的微信或 SIM 卡资料。请勿输入真实敏感信息。</p>
         <section className="grid grid-cols-2 gap-2">
           <button
             type="button"
@@ -138,7 +139,7 @@ export function Splash() {
             onClick={submit}
             className="flex h-11 items-center justify-center gap-1.5 rounded-lg border border-[#171717]/20 text-sm font-medium hover:bg-[#171717]/5"
           >
-            <UserPlus size={16} /> 注册
+            <UserPlus size={16} /> 新建体验档案
           </button>
         </section>
       </div>

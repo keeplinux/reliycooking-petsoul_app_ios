@@ -9,7 +9,10 @@ export type AppApi = {
   addDevice: (input: DeviceInput) => void
   removeDevice: (deviceId: string) => void
   pets: Pet[]
-  addPet: (pet: Pet) => void
+  addPet: (pet: Pet) => Promise<void>
+  updatePet: (pet: Pet) => Promise<void>
+  removePet: (petId: string) => Promise<void>
+  updateDevice: (deviceId: string, patch: Pick<Device, 'flowEnabled' | 'lightEnabled'>) => void
   account: Account | null
   signIn: (account: Account) => void
   /** 更新当前账号资料（如头像），并随账号持久化 */

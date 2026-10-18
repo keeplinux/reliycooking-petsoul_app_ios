@@ -1,3 +1,4 @@
+import { writeMedia } from './mediaStore'
 import type { Device, Pet } from './nav'
 import { products } from './catalog'
 
@@ -32,9 +33,9 @@ function isDevice(value: unknown): value is Device {
 }
 
 /** 读取已持久化的设备列表，数据缺失或损坏时回退到默认列表 */
-export function readStoredDevices(fallback: Device[]): Device[] {
+export function readStoredDevices(fallback: Device[], accountId?: string): Device[] {
   try {
-    const raw = window.localStorage.getItem(deviceStorageKey)
+    const raw = window.localStorage.getItem(scopedKey(deviceStorageKey, accountId))
     if (!raw) {
       return fallback
     }
@@ -49,16 +50,8 @@ export function readStoredDevices(fallback: Device[]): Device[] {
   }
 }
 
-export function storeDevices(devices: Device[]): void {
-  try {
-    window.localStorage.setItem(deviceStorageKey, JSON.stringify(devices))
-  } catch {
-    // 存储不可用时忽略，保持内存态即可
-  }
-}
-
-export function clearStoredDevices(): void {
-  window.localStorage.removeItem(deviceStorageKey)
+export function storeDevices(devices: Device[], accountId: string): void {
+  window.localStorage.setItem(scopedKey(deviceStorageKey, accountId), JSON.stringify(devices))
 }
 
 function isPet(value: unknown): value is Pet {
@@ -79,9 +72,9 @@ function isPet(value: unknown): value is Pet {
 }
 
 /** 读取已持久化的宠物列表；视频（blobURL）重启后失效，读取时降级为 null */
-export function readStoredPets(): Pet[] {
+export function readStoredPets(accountId?: string): Pet[] {
   try {
-    const raw = window.localStorage.getItem(petStorageKey)
+    const raw = window.localStorage.getItem(scopedKey(petStorageKey, accountId))
     if (!raw) {
       return []
     }
@@ -97,14 +90,42 @@ export function readStoredPets(): Pet[] {
   }
 }
 
-export function storePets(pets: Pet[]): void {
-  try {
-    window.localStorage.setItem(petStorageKey, JSON.stringify(pets))
-  } catch {
-    // 存储不可用（如 dataURL 超限）时忽略，保持内存态
-  }
+const petWrites = new Map<string, Promise<void>>()
+export async function storePets(pets: Pet[], accountId: string): Promise<void> {
+  const snapshot = pets.map((pet) => ({ ...pet }))
+  const previous = petWrites.get(accountId) ?? Promise.resolve()
+  const job = previous.catch(() => {}).then(async () => {
+    for (const pet of snapshot) {
+      if (pet.media) await writeMedia(`pet:${accountId}:${pet.id}`, pet.media)
+    }
+    window.localStorage.setItem(scopedKey(petStorageKey, accountId),
+      JSON.stringify(snapshot.map((pet) => ({ ...pet, media: null }))))
+  })
+  petWrites.set(accountId, job)
+  try { await job } finally { if (petWrites.get(accountId) === job) petWrites.delete(accountId) }
 }
 
-export function clearStoredPets(): void {
-  window.localStorage.removeItem(petStorageKey)
+function scopedKey(key: string, accountId?: string): string {
+  return accountId ? `${key}:${encodeURIComponent(accountId)}` : key
+}
+
+/** Claim the old shared records once; never expose them to a second account. */
+export function migrateLegacyWorkspace(accountId: string): void {
+  const profileKey = `silifield:profile:${accountId}`
+  const current = localStorage.getItem('pet-smart-app:account')
+  if (current && localStorage.getItem(profileKey) === null) {
+    const profile = JSON.parse(current) as { id?: string }
+    if (profile.id === accountId) localStorage.setItem(profileKey, current)
+  }
+  const ownerKey = 'pet-smart-app:legacy-owner'
+  const owner = localStorage.getItem(ownerKey)
+  if (owner && owner !== accountId) return
+  localStorage.setItem(ownerKey, accountId)
+  for (const key of [deviceStorageKey, petStorageKey]) {
+    const target = scopedKey(key, accountId)
+    if (localStorage.getItem(target) === null) {
+      const old = localStorage.getItem(key)
+      if (old !== null) localStorage.setItem(target, old)
+    }
+  }
 }

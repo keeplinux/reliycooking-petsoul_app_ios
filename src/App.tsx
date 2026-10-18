@@ -5,7 +5,7 @@ import type { AppApi } from './appContext'
 import { clearStoredAccount, readStoredAccount, storeAccount } from './auth'
 import type { Account, Device, DeviceInput, Pet, View } from './nav'
 import { buildDevice } from './provisioning'
-import { clearStoredDevices, clearStoredPets, readStoredDevices, readStoredPets, storeDevices, storePets } from './storage'
+import { migrateLegacyWorkspace, readStoredDevices, readStoredPets, storeDevices, storePets } from './storage'
 import { AvatarPickerView } from './views/AvatarPicker'
 import { DeviceView } from './views/Device'
 import { Home } from './views/Home'
@@ -40,7 +40,7 @@ function renderView(view: View): ReactNode {
     case 'mall':
       return <Mall />
     case 'purchase':
-      return <PurchaseView productId={view.productId} />
+      return <PurchaseView productId={view.productId} variant={view.variant} />
     case 'scan':
       return <ScanView expectProductId={view.expectProductId} />
     case 'hotspot':
@@ -54,7 +54,7 @@ function renderView(view: View): ReactNode {
     case 'device':
       return <DeviceView deviceId={view.deviceId} />
     case 'petCapture':
-      return <PetCapture />
+      return <PetCapture petId={view.petId} />
     case 'petProfile':
       return <PetProfileView petId={view.petId} />
     default:
@@ -65,9 +65,14 @@ function renderView(view: View): ReactNode {
 function App() {
   const [account, setAccount] = useState<Account | null>(() => readStoredAccount())
   const [view, setView] = useState<View>(() => (readStoredAccount() ? { name: 'home' } : { name: 'splash' }))
-  const [devices, setDevices] = useState<Device[]>(() => readStoredDevices(initialDevices))
-  const [pets, setPets] = useState<Pet[]>(() => readStoredPets())
+  const [devices, setDevices] = useState<Device[]>(() => {
+    const id = readStoredAccount()?.id
+    if (id) migrateLegacyWorkspace(id)
+    return id ? readStoredDevices(initialDevices, id) : []
+  })
+  const [pets, setPets] = useState<Pet[]>(() => { const id = readStoredAccount()?.id; return id ? readStoredPets(id) : [] })
 
+  const [storageError, setStorageError] = useState<string | null>(null)
   const navigate = useCallback((next: View) => setView(next), [])
 
   const addDevice = useCallback((input: DeviceInput) => {
@@ -117,48 +122,83 @@ function App() {
     setDevices((prev) => prev.filter((device) => device.id !== deviceId))
   }, [])
 
-  const addPet = useCallback((next: Pet) => {
+  const addPet = useCallback(async (next: Pet) => {
+    if (!account) throw new Error('请先登录')
+    await storePets([...pets, next], account.id)
     setPets((prev) => [...prev, next])
+  }, [account, pets])
+
+  const updatePet = useCallback(async (next: Pet) => {
+    if (!account) throw new Error('请先登录')
+    const updated = pets.map((pet) => pet.id === next.id ? next : pet)
+    await storePets(updated, account.id)
+    setPets(updated)
+  }, [account, pets])
+
+  const removePet = useCallback(async (petId: string) => {
+    if (!account) throw new Error('请先登录')
+    const updated = pets.filter((pet) => pet.id !== petId)
+    await storePets(updated, account.id)
+    setPets(updated)
+  }, [account, pets])
+
+  const updateDevice = useCallback((deviceId: string, patch: Pick<Device, 'flowEnabled' | 'lightEnabled'>) => {
+    setDevices((prev) => prev.map((device) => device.id === deviceId ? { ...device, ...patch } : device))
   }, [])
 
   const signIn = useCallback((next: Account) => {
-    storeAccount(next)
-    setAccount(next)
-    setView({ name: 'home' })
+    try {
+      migrateLegacyWorkspace(next.id)
+      const profile = localStorage.getItem(`silifield:profile:${next.id}`)
+      const saved = profile ? JSON.parse(profile) as Account : next
+      const restored = { ...next, avatarId: saved.avatarId, avatarImage: saved.avatarImage, notifications: saved.notifications }
+      storeAccount(restored)
+      setDevices(readStoredDevices(initialDevices, next.id))
+      setPets(readStoredPets(next.id))
+      setAccount(restored)
+      setView({ name: 'home' })
+    } catch {
+      setStorageError('本地资料读取失败，请释放存储空间后重试。')
+    }
   }, [])
 
-  const updateAccount = useCallback(
-    (patch: Partial<Account>) => {
-      setAccount((prev) => {
-        if (!prev) {
-          return prev
-        }
-        const next = { ...prev, ...patch }
-        storeAccount(next)
-        return next
-      })
-    },
-    [],
-  )
+  const updateAccount = useCallback((patch: Partial<Account>) => {
+    if (!account) return
+    const next = { ...account, ...patch }
+    try {
+      localStorage.setItem(`silifield:profile:${next.id}`, JSON.stringify(next))
+      storeAccount(next)
+      setAccount(next)
+    } catch { setStorageError('账号偏好保存失败，请释放存储空间后重试。') }
+  }, [account])
 
   const signOut = useCallback(() => {
     clearStoredAccount()
-    clearStoredDevices()
-    clearStoredPets()
     setAccount(null)
     setPets([])
+    setDevices([])
     setView({ name: 'splash' })
   }, [])
 
   // 配网结果持久化，刷新后绑定关系不丢失
   useEffect(() => {
-    storeDevices(devices)
-  }, [devices])
+    if (!account) return
+    let active = true
+    void Promise.resolve().then(() => storeDevices(devices, account.id)).catch(() => {
+      if (active) setStorageError('设备设置未能保存，请释放存储空间后重试。')
+    })
+    return () => { active = false }
+  }, [devices, account])
 
   // 宠物档案持久化（含服务器回传的模型参数）
   useEffect(() => {
-    storePets(pets)
-  }, [pets])
+    if (!account) return
+    let active = true
+    void storePets(pets, account.id).catch(() => {
+      if (active) setStorageError('宠物资料未能保存，请保留当前页面并释放存储空间。')
+    })
+    return () => { active = false }
+  }, [pets, account])
 
   const api = useMemo<AppApi>(
     () => ({
@@ -169,18 +209,23 @@ function App() {
       removeDevice,
       pets,
       addPet,
+      updatePet,
+      removePet,
+      updateDevice,
       account,
       signIn,
       updateAccount,
       signOut,
     }),
-    [view, navigate, devices, addDevice, removeDevice, pets, addPet, account, signIn, updateAccount, signOut],
+    [view, navigate, devices, addDevice, removeDevice, pets, addPet, updatePet, removePet, updateDevice, account, signIn, updateAccount, signOut],
   )
 
   return (
     <AppContext.Provider value={api}>
       <div className="app-shell relative flex flex-col bg-[#f7f7f8] text-[#171717]">
+        {storageError && <div role="alert" className="shrink-0 bg-amber-100 p-3 text-sm text-amber-950">{storageError}<button className="ml-3 underline" onClick={() => setStorageError(null)}>知道了</button></div>}
         {renderView(view)}
+        {view.name !== 'home' && <div className="demo-banner">演示模式 · 数据与设备操作为本地模拟</div>}
       </div>
     </AppContext.Provider>
   )

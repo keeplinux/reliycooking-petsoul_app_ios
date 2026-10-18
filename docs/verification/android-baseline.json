@@ -55,16 +55,80 @@
   },
   "intentionalChanges": {
     "src/App.tsx": {
-      "sha256": "40adf8e0313d1787bcfe3c800b12921fcfde6a70025524ae9b2ab71799ea9fdd",
-      "reason": "v1.3.17: prevent focus zoom and bound the keyboard-resized form layout"
+      "sha256": "1cc85523d6cbbc65d52a5c0227ef74319f8e4b03a3ce1bbe6fd8d59a723b7075",
+      "reason": "v1.4.0: implement the approved experience review (account isolation, durable drafts, fixed navigation and transparent demos)"
     },
     "src/index.css": {
-      "sha256": "b3e57c621ed983010bdc61a950cbb88d83da834500f473a0f2409d2ac5373ee3",
-      "reason": "v1.3.17: prevent focus zoom and bound the keyboard-resized form layout"
+      "sha256": "c278805d8966c6a26dca101f01d4a094639b0044d014c35e1de2c2ab8a466986",
+      "reason": "v1.4.0: implement the approved experience review (account isolation, durable drafts, fixed navigation and transparent demos)"
     },
     "src/views/PetCapture.tsx": {
-      "sha256": "793e397b974b90c816d61a296c171d2882200f3a191405ef05b46917c9c7f89b",
-      "reason": "v1.3.17: prevent focus zoom and bound the keyboard-resized form layout"
+      "sha256": "4856a04c9f0c185a8df4b319fa51195f99cd24987c19085de03da7fd425e1cf5",
+      "reason": "v1.4.0: approved experience improvements including durable capture drafts, retry and account profile migration"
+    },
+    "src/appContext.ts": {
+      "sha256": "dcfbb54f1eab46576c7da16bf63eadff2d7c927405c0a46389d26af1b210fc09",
+      "reason": "v1.4.0: implement the approved experience review (account isolation, durable drafts, fixed navigation and transparent demos)"
+    },
+    "src/appUpdate.ts": {
+      "removed": true,
+      "reason": "v1.4.0: remove the simulated in-app updater"
+    },
+    "src/components/HomeScene.tsx": {
+      "sha256": "5911f28193d343b846d7fe94adb138510e3575a4e21808e35a104ded6fa5cb44",
+      "reason": "v1.4.0: implement the approved experience review (account isolation, durable drafts, fixed navigation and transparent demos)"
+    },
+    "src/components/TopBar.tsx": {
+      "sha256": "a76393fce0b05a274b8eeba86528789045140db179eb20c67f0201be7b665ba1",
+      "reason": "v1.4.0: implement the approved experience review (account isolation, durable drafts, fixed navigation and transparent demos)"
+    },
+    "src/components/WaterDataAnalysis.tsx": {
+      "sha256": "5e3f88959ae6f4fe89f583f70bb3bdf52462fcd97e6f1144c15bb59ad37455f2",
+      "reason": "v1.4.0: implement the approved experience review (account isolation, durable drafts, fixed navigation and transparent demos)"
+    },
+    "src/nav.ts": {
+      "sha256": "feef54b7f7ae3c3c77770c2558230bdc117a4ddc29faf9af1419cbdcca8f8d27",
+      "reason": "v1.4.0: implement the approved experience review (account isolation, durable drafts, fixed navigation and transparent demos)"
+    },
+    "src/storage.ts": {
+      "sha256": "a7741b57f83a70a5ff72c92a01ec0fdb77fc971c12be39cd34db9240f0b02a9e",
+      "reason": "v1.4.0: approved experience improvements including durable capture drafts, retry and account profile migration"
+    },
+    "src/views/Device.tsx": {
+      "sha256": "c7acc20198c9382be85460ca6ec7cf62486115cb91473ae03f25acb2f952e299",
+      "reason": "v1.4.0: implement the approved experience review (account isolation, durable drafts, fixed navigation and transparent demos)"
+    },
+    "src/views/Home.tsx": {
+      "sha256": "e24a0d4de5f5bc14386d19a2960bcc24a541825247edebf33bef259ce7081071",
+      "reason": "v1.4.0: implement the approved experience review (account isolation, durable drafts, fixed navigation and transparent demos)"
+    },
+    "src/views/Mall.tsx": {
+      "sha256": "eca75f4ff072be593418e25f0c83a9b6293c1401440249da92494b90d7c5c8f7",
+      "reason": "v1.4.0: implement the approved experience review (account isolation, durable drafts, fixed navigation and transparent demos)"
+    },
+    "src/views/PetProfile.tsx": {
+      "sha256": "72d332711461647ba48b13019a22a3e7bbd8876d86838e37c46613d2513b08a9",
+      "reason": "v1.4.0: implement the approved experience review (account isolation, durable drafts, fixed navigation and transparent demos)"
+    },
+    "src/views/Purchase.tsx": {
+      "sha256": "2e7db7d7de1d0510266bcc12380a0a080b78b1c63271006321a88c22e14f54ce",
+      "reason": "v1.4.0: implement the approved experience review (account isolation, durable drafts, fixed navigation and transparent demos)"
+    },
+    "src/views/Scan.tsx": {
+      "sha256": "779a4771796fa1de3d0fc8ba0018b21830dd3bd3f9ee6a7b91e86e5747246d0d",
+      "reason": "v1.4.0: implement the approved experience review (account isolation, durable drafts, fixed navigation and transparent demos)"
+    },
+    "src/views/Settings.tsx": {
+      "sha256": "22f45224c1ea2ff8f4ef4137d7ce9ae2313b4be20fbc1465970ad79a306cbcf2",
+      "reason": "v1.4.0: implement the approved experience review (account isolation, durable drafts, fixed navigation and transparent demos)"
+    },
+    "src/views/Splash.tsx": {
+      "sha256": "a98f522ffda87028c19638b6a427c69a2a95d35a2b5450d6d85291d426ef3664",
+      "reason": "v1.4.0: implement the approved experience review (account isolation, durable drafts, fixed navigation and transparent demos)"
+    },
+    "src/waterStats.ts": {
+      "sha256": "59d1fc068479e2d10c7d2a8850a9c4ef3964acfe6f8f879c1ddb0f13373ad1f2",
+      "reason": "v1.4.0: implement the approved experience review (account isolation, durable drafts, fixed navigation and transparent demos)"
     }
   }
 }

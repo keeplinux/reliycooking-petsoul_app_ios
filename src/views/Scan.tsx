@@ -49,7 +49,7 @@ type Phase =
   | { name: 'success'; payload: QrPayload; result: ProvisionResult }
   | { name: 'error'; failure: ProvisionFailure; payload: QrPayload }
 
-const scanLabels = ['扫码识别', 'BLE 连接', 'WiFi 配网', '绑定完成']
+const scanLabels = ['扫码识别', '连接设备', 'WiFi 配网', '绑定完成']
 const hotspotLabels = ['热点发现', '会话校验', 'WiFi 配网', '绑定完成']
 
 export function ScanView({
@@ -517,7 +517,7 @@ function WifiPanel({
         <span className="h-2 w-2 shrink-0 rounded-full bg-emerald-500" />
         <span className="font-medium">{product?.name ?? '设备'}</span>
         <span className="text-xs text-[#171717]/45">
-          {source === 'hotspot' ? '热点会话已建立' : 'BLE 已连接'}
+          {source === 'hotspot' ? '热点会话已建立' : '模拟连接完成'}
         </span>
       </div>
 
@@ -652,9 +652,9 @@ function SuccessPanel({
         <CircleCheckBig size={30} />
       </span>
       <div className="text-center">
-        <h2 className="m-0 text-base font-semibold">配网并绑定成功</h2>
+        <h2 className="m-0 text-base font-semibold">演示绑定完成</h2>
         <p className="m-0 mt-1 text-xs text-[#171717]/45">
-          {product?.name ?? '设备'} 已接入 WiFi 并绑定到你的账号
+          {product?.name ?? '设备'} 已保存到本机演示设备列表，尚未连接真实硬件
         </p>
       </div>
 

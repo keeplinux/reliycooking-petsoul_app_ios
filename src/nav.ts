@@ -2,14 +2,14 @@ export type View =
   | { name: 'splash' }
   | { name: 'home' }
   | { name: 'mall' }
-  | { name: 'purchase'; productId: string }
+  | { name: 'purchase'; productId: string; variant?: number }
   | { name: 'scan'; expectProductId?: string }
   | { name: 'hotspot' }
   | { name: 'provision'; payload: QrPayload; source: ProvisionSource }
   | { name: 'settings' }
   | { name: 'avatarPicker' }
   | { name: 'device'; deviceId: string }
-  | { name: 'petCapture' }
+  | { name: 'petCapture'; petId?: string }
   | { name: 'petProfile'; petId: string }
 
 export type AccountMethod = 'phone' | 'wechat'
@@ -19,6 +19,7 @@ export type Account = {
   method: AccountMethod
   identifier: string
   /** 用户资料头像（预设形象 id），见 src/avatars.ts */
+  notifications?: boolean
   avatarId?: string
   /** 用户自定义头像（本地相册/相机，压缩后的方形 dataURL），优先于 avatarId */
   avatarImage?: string
@@ -51,6 +52,8 @@ export type Device = {
   source: ProvisionSource
   status: DeviceStatus
   /** 绑定时间戳 */
+  flowEnabled?: boolean
+  lightEnabled?: boolean
   boundAt: number
 }
 

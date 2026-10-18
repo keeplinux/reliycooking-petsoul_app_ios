@@ -8,7 +8,7 @@ const noop = () => {}
 const api: AppApi = {
   view: { name: 'petCapture' }, navigate: noop,
   devices: [], addDevice: noop, removeDevice: noop,
-  pets: [], addPet: noop, account: null,
+  pets: [], addPet: async () => {}, updatePet: async () => {}, removePet: async () => {}, updateDevice: noop, account: null,
   signIn: noop, updateAccount: noop, signOut: noop,
 }
 createRoot(document.getElementById('root')!).render(
