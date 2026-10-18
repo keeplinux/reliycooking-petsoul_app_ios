@@ -1,0 +1,120 @@
+@import "tailwindcss";
+
+/*
+ * 核心字体：汇文明朝体（Huiwen Mincho）
+ * 来源：petsoul 官网（keeplinux/petsoul_html_v1.0.0）核心字体，与官网品牌一致。
+ * 完整字体来自修正版仓库 bosswnx/huiwenmincho-improved（CC0 1.0，
+ * 原作者特里王授权允许免费商用与嵌入），按 App 文案 + GB2312 一级常用字
+ * 子集化（3912 字符，woff2 约 2.4MB），许可文件见 public/fonts/LICENSE-huiwen-mincho.txt。
+ */
+@font-face {
+  font-family: "Huiwen Mincho";
+  src: url("/fonts/huiwen-mincho.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  font-family: "Huiwen Mincho", "Noto Serif SC", "Songti SC", "STSong", Georgia, serif;
+  color: #171717;
+  background: #f7f7f8;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: "Huiwen Mincho", "Noto Serif SC", "Songti SC", "STSong", Georgia, serif;
+  overscroll-behavior-y: none;
+}
+
+/*
+ * 原生 App 式滚动：所有滚动容器不显示滚动条，滚动过程无任何多余指示效果。
+ */
+* {
+  scrollbar-width: none;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}
+
+button {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible {
+  outline: 3px solid rgba(23, 23, 23, 0.2);
+  outline-offset: 2px;
+}
+
+/*
+ * 安全区适配：顶栏避开灵动岛 / 状态栏，底栏与弹层避开 home 指示条。
+ * 部分安卓 WebView 不上报 safe-area inset（env() 为 0），用 28px 兜底，
+ * 加 12px 呼吸留白；env() 正常的机型视觉与之前完全一致。
+ */
+.safe-top {
+  padding-top: calc(max(env(safe-area-inset-top), 28px) + 12px);
+}
+
+.safe-bottom {
+  padding-bottom: calc(env(safe-area-inset-bottom) + 16px);
+}
+
+.safe-bottom-lg {
+  padding-bottom: calc(env(safe-area-inset-bottom) + 24px);
+}
+
+.banner-top {
+  top: calc(env(safe-area-inset-top) + 68px);
+}
+
+/* 扫码取景框扫描线动画 */
+@keyframes dsh-scanline {
+  0%,
+  100% {
+    top: 12%;
+  }
+  50% {
+    top: 88%;
+  }
+}
+
+/*
+ * 历史画面时间轴：例外于全局隐藏规则，显示横向滚动条，
+ * 供用户拖拽自由拉取当天时间段（画面内部深色区，滚动条为白色半透明）。
+ */
+.timeline-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.5) transparent;
+}
+
+.timeline-scroll::-webkit-scrollbar {
+  display: block;
+  height: 5px;
+}
+
+.timeline-scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+}
+
+.timeline-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 999px;
+}

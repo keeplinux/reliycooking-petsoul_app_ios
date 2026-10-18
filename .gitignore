@@ -1,33 +1,51 @@
-# Xcode
-build/
-DerivedData/
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+*.apk
+
+# Local AI usage logs (token records, not project source)
+dsh-usage/
+
+# Android signing secrets and build outputs
+android/keystore.properties
+android/SIGNING.local.md
+*.keystore
+!debug.keystore
+android/.gradle/
+android/app/build/
+android/build/
+android/capacitor-cordova-android-plugins/build/
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# iOS local build / signing / test artifacts
+.build/
 *.xcuserstate
 *.xcuserdatad/
-*.xcworkspace/xcuserdata/
-*.xcodeproj/xcuserdata/
-*.xcodeproj/project.xcworkspace/xcuserdata/
-
-# Swift Package Manager
-.swiftpm/
-.build/
-Packages/
-Package.resolved
-
-# CocoaPods
-Pods/
-
-# fastlane
-fastlane/report.xml
-fastlane/Preview.html
-fastlane/screenshots
-fastlane/test_output
-
-# macOS
-.DS_Store
-*.swp
-*~
-
-# Secrets / signing
 *.p12
 *.mobileprovision
 *.cer
+*.xcresult/
+tests/ios/*.xcodeproj/
+
+playwright-report/
+test-results/

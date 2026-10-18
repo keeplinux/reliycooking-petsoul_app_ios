@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>硅宠场域 App · 功能清单与操作场景</title>
+    <style>
+      :root {
+        --bg: #f7f7f8;
+        --ink: #171717;
+        --line: rgba(23, 23, 23, 0.1);
+        --muted: rgba(23, 23, 23, 0.5);
+        --amber: #b45309;
+        --green: #047857;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        padding: 40px 20px 72px;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
+          'Hiragino Sans GB', 'Microsoft YaHei', system-ui, sans-serif;
+        font-size: 14px;
+        line-height: 1.7;
+        -webkit-font-smoothing: antialiased;
+      }
+      .wrap {
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+      header.top {
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 20px;
+        margin-bottom: 32px;
+      }
+      h1 {
+        margin: 0;
+        font-size: 26px;
+        letter-spacing: -0.01em;
+      }
+      .sub {
+        margin: 6px 0 0;
+        font-size: 12px;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .meta {
+        margin: 14px 0 0;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      h2 {
+        margin: 44px 0 6px;
+        font-size: 17px;
+      }
+      h2 .n {
+        display: inline-grid;
+        place-items: center;
+        width: 22px;
+        height: 22px;
+        margin-right: 8px;
+        border-radius: 6px;
+        background: var(--ink);
+        color: #fff;
+        font-size: 12px;
+        vertical-align: 2px;
+      }
+      h3 {
+        margin: 26px 0 8px;
+        font-size: 14px;
+      }
+      p {
+        margin: 8px 0;
+      }
+      .lead {
+        color: var(--muted);
+        font-size: 13px;
+        margin-bottom: 0;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 12px;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--line);
+        vertical-align: top;
+        font-size: 13px;
+      }
+      th {
+        background: rgba(23, 23, 23, 0.03);
+        font-weight: 600;
+        font-size: 12px;
+        color: rgba(23, 23, 23, 0.62);
+        white-space: nowrap;
+      }
+      tbody tr:last-child td {
+        border-bottom: 0;
+      }
+      code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 12px;
+        background: rgba(23, 23, 23, 0.05);
+        border-radius: 5px;
+        padding: 1px 5px;
+      }
+      .card {
+        margin-top: 14px;
+        padding: 16px 18px;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+      }
+      .card h3 {
+        margin-top: 0;
+      }
+      ol.steps,
+      ul.plain {
+        margin: 10px 0 0;
+        padding-left: 0;
+        list-style: none;
+        counter-reset: step;
+      }
+      ol.steps li {
+        counter-increment: step;
+        position: relative;
+        padding: 7px 0 7px 34px;
+        font-size: 13px;
+      }
+      ol.steps li::before {
+        content: counter(step);
+        position: absolute;
+        left: 0;
+        top: 8px;
+        display: grid;
+        place-items: center;
+        width: 22px;
+        height: 22px;
+        border-radius: 999px;
+        background: var(--ink);
+        color: #fff;
+        font-size: 11px;
+        font-weight: 600;
+      }
+      ul.plain li {
+        position: relative;
+        padding: 5px 0 5px 16px;
+        font-size: 13px;
+      }
+      ul.plain li::before {
+        content: '';
+        position: absolute;
+        left: 2px;
+        top: 14px;
+        width: 5px;
+        height: 5px;
+        border-radius: 999px;
+        background: rgba(23, 23, 23, 0.3);
+      }
+      .tag {
+        display: inline-block;
+        padding: 1px 8px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 500;
+        white-space: nowrap;
+      }
+      .tag.ok {
+        background: #d1fae5;
+        color: var(--green);
+      }
+      .tag.sim {
+        background: #fef3c7;
+        color: var(--amber);
+      }
+      .tag.todo {
+        background: rgba(23, 23, 23, 0.06);
+        color: rgba(23, 23, 23, 0.55);
+      }
+      .note {
+        margin-top: 12px;
+        padding: 12px 14px;
+        background: #fffbeb;
+        border: 1px solid #fde68a;
+        border-radius: 10px;
+        font-size: 12px;
+        line-height: 1.65;
+        color: #78350f;
+      }
+      .grid2 {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 14px;
+      }
+      footer {
+        margin-top: 48px;
+        padding-top: 16px;
+        border-top: 1px solid var(--line);
+        font-size: 12px;
+        color: var(--muted);
+      }
+      a {
+        color: inherit;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="top">
+        <h1>硅宠场域 App · 功能清单与操作场景</h1>
+        <p class="sub">silifield · feature &amp; scenario guide</p>
+        <p class="meta">
+          版本：原型 / Demo 阶段（未接真机 BLE、相机解码与云端）　·　技术栈：Vite + React 19 +
+          TypeScript + Tailwind 4 + three.js + Capacitor 8
+        </p>
+      </header>
+
+      <h2><span class="n">1</span>页面与功能总览</h2>
+      <p class="lead">
+        当前 App 共 9 个视图，全部由 <code>App.tsx</code> 的 <code>renderView()</code> 按
+        <code>View</code> 联合类型分发，没有路由库。演示调试面板已移除，界面上不再有任何
+        DEMO 元素。
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>页面</th>
+            <th>入口</th>
+            <th>功能</th>
+            <th>状态</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>启动登录</b><br /><code>splash</code></td>
+            <td>未登录时打开 App</td>
+            <td>
+              手机号 / 微信两种登录方式；自动检索本机账号并填充；手机号 11 位、微信号 6–20
+              位校验；登录态写 localStorage，下次打开直接进首页
+            </td>
+            <td><span class="tag sim">模拟</span></td>
+          </tr>
+          <tr>
+            <td><b>首页 3D 场景</b><br /><code>home</code></td>
+            <td>登录后默认页</td>
+            <td>
+              three.js 真实 3D 星球场景，设备以 3D 模型落在球面；点击设备进详情，点击猫进宠物录入；底部「探针 / 母舰」两个入口；有待配网设备时顶部出现横幅
+            </td>
+            <td><span class="tag ok">可用</span></td>
+          </tr>
+          <tr>
+            <td><b>扫码配网向导</b><br /><code>scan</code></td>
+            <td>首页右上「扫码」</td>
+            <td>
+              四步向导：扫码识别 → BLE 连接 → WiFi 填写 → 下发配网绑定。相机取景框点击即扫描，也可从相册选二维码图片；失败按错误码给动作
+            </td>
+            <td><span class="tag sim">识别模拟</span></td>
+          </tr>
+          <tr>
+            <td><b>保底配网</b><br /><code>hotspot</code></td>
+            <td>配网失败后的自动提示 / 设置 →「配网遇到问题」</td>
+            <td>
+              设备自建 <code>silifield</code> 热点，手机连上后 App 检测到设备并加入设备列表，用户即可手动配网
+            </td>
+            <td><span class="tag sim">探测模拟</span></td>
+          </tr>
+          <tr>
+            <td><b>设备详情</b><br /><code>device</code></td>
+            <td>首页点击 3D 设备模型</td>
+            <td>
+              在线状态、今日饮水量 / 水量 / 水温 / 水质健康度四项指标、饮水数据可视化、出水方式切换、灯光、摄像头实时与回放；未配网设备显示待配网提示与「立即配网」
+            </td>
+            <td><span class="tag sim">数据模拟</span></td>
+          </tr>
+          <tr>
+            <td><b>宠物录入</b><br /><code>petCapture</code></td>
+            <td>首页点击猫</td>
+            <td>拍照 / 相册选取宠物照片，生成数字形象并加入场景；另有 Demo 一键录入</td>
+            <td><span class="tag ok">可用</span></td>
+          </tr>
+          <tr>
+            <td><b>商城</b><br /><code>mall</code></td>
+            <td>首页底部「探针」</td>
+            <td>5 款宠物智能硬件列表（投食机 / 猫砂盆 / 饮水机 / 摄像头 / 定位器）</td>
+            <td><span class="tag ok">可用</span></td>
+          </tr>
+          <tr>
+            <td><b>购买跳转</b><br /><code>purchase</code></td>
+            <td>商城点击商品</td>
+            <td>商品详情 + 淘宝 / 京东外链跳转</td>
+            <td><span class="tag ok">可用</span></td>
+          </tr>
+          <tr>
+            <td><b>设置</b><br /><code>settings</code></td>
+            <td>首页底部「母舰」</td>
+            <td>
+              账号信息、宠物数量、消息通知开关、设备管理（查看 SN 与已配网 WiFi、移除设备、给待配网设备手动配网）、配网遇到问题的排查入口、关于、退出登录
+            </td>
+            <td><span class="tag ok">可用</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2><span class="n">2</span>核心应用场景操作</h2>
+
+      <div class="card">
+        <h3>场景 A · 首次绑定设备（扫码 + BLE，正常路径）</h3>
+        <ol class="steps">
+          <li>登录后进入 3D 首页，右上角点「<b>扫码</b>」。</li>
+          <li>扫码页点中间的取景框即开始扫描，识别到机身二维码后自动进入下一步（也可点「从相册选择二维码」）。</li>
+          <li>自动进入 <b>BLE 连接</b> 阶段：发现信号 → 建立 GATT 连接 → 读取设备信息，三步依次打勾。</li>
+          <li>连接成功后进入 <b>WiFi 配网</b> 页，填写 WiFi 名称与密码（密码至少 8 位）。</li>
+          <li>点「开始配网」→ 写入 WiFi 配置 → 设备连接路由器 → 云端绑定，三步完成。</li>
+          <li>结果页显示设备 SN、分配的 IP、配网方式、绑定时间，点「<b>完成</b>」。</li>
+          <li>回到首页，新设备以 3D 模型出现在星球上；点它进入设备详情看饮水数据。</li>
+        </ol>
+        <div class="note">
+          演示建议填 <code>Silifield-Office</code> + 8 位以上密码。<b>不要</b>填以「5G」结尾的
+          WiFi 名称——设备固件无法加入 5GHz 频段，会直接走配网失败。
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>场景 B · 配网失败 → 自动提示保底配网（兜底路径）</h3>
+        <p class="lead">
+          对应「首次绑定无法扫码」「换了家里 WiFi 无法重新配网」「BLE 模块故障」三类现实问题。
+        </p>
+        <ol class="steps">
+          <li>点首页右上「扫码」，扫到任意一台设备。</li>
+          <li>WiFi 名称填一个以 <code>5G</code> 结尾的网络（例如 <code>Home-5G</code>），密码填 8 位以上。</li>
+          <li>点「开始配网」→ 第三步「写入 WiFi 配置」失败，错误码 <code>WIFI_UNSUPPORTED_BAND</code>，失败页给出「重新填写 WiFi」。</li>
+          <li>同时底部<b>自动弹出提示层</b>：「试试保底配网」，说明可以让手机直连设备自己的
+            <code>silifield</code> 热点，App 会自动发现设备并重新下发 WiFi 配置，不需要机身二维码。</li>
+          <li>点「改用保底配网」→ 进入保底配网指引页，页面自动开始检测设备。</li>
+          <li>检测到设备后点「手动配网」→ 走「热点发现 → 会话校验 → WiFi 配网 → 绑定完成」四步，这次填 2.4GHz 网络即可成功。</li>
+          <li>回首页，设备已绑定；首页顶部也会出现「发现 1 台待配网设备」横幅（若该次未直接完成绑定）。</li>
+        </ol>
+        <div class="note">
+          保底配网的常驻入口只保留在<b>设置 →「配网遇到问题」</b>里，对应「二维码丢失、一开始就没法扫码」这种连失败都无法触发的场景。
+          首页不再有任何保底配网按钮。
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>场景 C · 设备详情与数据</h3>
+        <ol class="steps">
+          <li>首页点击星球上的饮水机模型，进入设备详情。</li>
+          <li>顶部是在线状态条；下面依次是饮水数据可视化、今日饮水量 / 水量 / 水温 / 水质健康度四项指标。</li>
+          <li>「出水方式」可在持续流动 / 感应流动 / 不流动之间切换；下方可看探针运行状态与灯光模式。</li>
+          <li>「摄像头」区可切「实时 / 回放」，回放里选一段录像可播放，带进度条与时间显示。</li>
+          <li>如果点的是待配网设备，顶部会提示尚未配网并给出「立即配网」。</li>
+        </ol>
+      </div>
+
+      <div class="card">
+        <h3>场景 D · 宠物数字形象 + 商城 + 设置</h3>
+        <ol class="steps">
+          <li>首页点击星球上的<b>猫</b>，进入「录入宠物数字形象」。</li>
+          <li>点「拍照」或「相册」选一张图，预览后点「上传并开始构建」；懒得选图就直接点「Demo 录入」。</li>
+          <li>回到首页，场景里会多出一只宠物。设备与宠物都会按球面角度错开摆放，不会重叠。</li>
+          <li>底部「<b>探针</b>」进商城，点任意商品进购买页，可跳转淘宝 / 京东。</li>
+          <li>底部「<b>母舰</b>」进设置：改通知开关、看设备 SN 与配网 WiFi、移除设备、退出登录（退出会同时清空设备列表）。</li>
+        </ol>
+      </div>
+
+      <h2><span class="n">3</span>配网失败码与兜底动作</h2>
+      <p class="lead">
+        失败一律由错误码驱动文案与可用动作，页面不散落字符串。错误码表在
+        <code>src/provisioning.ts</code>。
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th>错误码</th>
+            <th>阶段</th>
+            <th>原型阶段如何触发</th>
+            <th>失败页动作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>WIFI_UNSUPPORTED_BAND</code></td>
+            <td>配网写入</td>
+            <td><b>可自然触发</b>：WiFi 名称以「5G」结尾</td>
+            <td>重新填写 WiFi + 自动弹出保底配网提示</td>
+          </tr>
+          <tr>
+            <td><code>BLE_NO_DEVICE</code></td>
+            <td>BLE 发现</td>
+            <td>需固件返回，原型阶段不出现</td>
+            <td>重试连接 / 改用保底配网</td>
+          </tr>
+          <tr>
+            <td><code>BLE_CONNECT_TIMEOUT</code></td>
+            <td>BLE 连接</td>
+            <td>需固件返回，原型阶段不出现</td>
+            <td>重试连接 / 改用保底配网</td>
+          </tr>
+          <tr>
+            <td><code>BLE_ALREADY_BOUND</code></td>
+            <td>BLE 读取信息</td>
+            <td>需云端返回，原型阶段不出现</td>
+            <td>重试连接（提示原账号解绑或长按重置）</td>
+          </tr>
+          <tr>
+            <td><code>WIFI_WRONG_PASSWORD</code></td>
+            <td>设备连路由器</td>
+            <td>需固件返回，原型阶段不出现</td>
+            <td>重新填写 WiFi / 改用保底配网</td>
+          </tr>
+          <tr>
+            <td><code>DEVICE_NO_RESPONSE</code></td>
+            <td>绑定回执</td>
+            <td>需固件返回，原型阶段不出现</td>
+            <td>重试连接 / 改用保底配网</td>
+          </tr>
+          <tr>
+            <td><code>HOTSPOT_NOT_FOUND</code></td>
+            <td>热点发现</td>
+            <td>需真实探测，原型阶段不出现</td>
+            <td>重新检测（提示保持连接热点）</td>
+          </tr>
+          <tr>
+            <td><code>HOTSPOT_TOKEN_INVALID</code></td>
+            <td>热点校验</td>
+            <td>需固件返回，原型阶段不出现</td>
+            <td>重新检测</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="lead">
+        标「改用保底配网」的分支在扫码通道失败时会同时触发底部提示层，把兜底串成闭环，用户不需要自己去找入口。
+      </p>
+
+      <h2><span class="n">4</span>手机适配与人机边界</h2>
+      <div class="grid2">
+        <div class="card">
+          <h3>尺寸与安全区</h3>
+          <ul class="plain">
+            <li><code>viewport-fit=cover</code>，配合 <code>env(safe-area-inset-*)</code> 留白</li>
+            <li>顶栏与首页头部自动下移，不进入灵动岛 / 状态栏区域</li>
+            <li>底部导航、页面底部与弹层避开 home 指示条</li>
+            <li>页面高度用 <code>h-dvh</code>，跟随浏览器工具栏收缩</li>
+            <li>非全面屏机型 <code>env()</code> 为 0，退化为常规留白，布局不回退</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>已经是真的 / 还是模拟的</h3>
+          <ul class="plain">
+            <li>真：登录与登录态、二维码解析器（三种格式）、配网状态机、错误码体系、设备以 SN 为唯一键 upsert、设备列表持久化、3D 首页与交互</li>
+            <li>模拟：相机解码、BLE 传输、保底热点探测（真机实现 <code>probeHotspotGateway()</code> 已写好但默认关闭）、饮水数据、云端绑定</li>
+            <li>模拟能力统一收敛在 <code>src/config.ts</code> 的 <code>simulateHardware</code> 开关后，接真机时关掉即可，页面与状态机无需改动</li>
+          </ul>
+        </div>
+      </div>
+
+      <footer>
+        硅宠场域 silifield · 上海硅宠场域科技有限公司<br />
+        本地预览：<code>npx vite</code> → 手机外壳预览页 <code>/preview-phone.html</code>
+      </footer>
+    </div>
+  </body>
+</html>

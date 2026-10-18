@@ -1,0 +1,21 @@
+name: ParityTests
+options:
+  deploymentTarget:
+    iOS: '16.0'
+targets:
+  ParityUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources: [UITests]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.pawlink.petwater.paritytests
+        GENERATE_INFOPLIST_FILE: YES
+        CODE_SIGNING_ALLOWED: NO
+schemes:
+  ParityUITests:
+    build:
+      targets:
+        ParityUITests: all
+    test:
+      targets: [ParityUITests]

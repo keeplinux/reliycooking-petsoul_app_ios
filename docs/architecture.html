@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>硅宠场域 Pet Smart App · 架构说明</title>
+<style>
+  :root {
+    --ink: #171717;
+    --muted: #5c5f66;
+    --faint: #8b8f96;
+    --line: #e6e7eb;
+    --bg: #f7f7f8;
+    --card: #ffffff;
+    --accent: #4f46e5;
+    --accent-soft: #eef0ff;
+    --teal: #0f766e;
+    --teal-soft: #e8f5f2;
+    --amber: #b45309;
+    --amber-soft: #fdf5e6;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+    font-size: 14px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { max-width: 1080px; margin: 0 auto; padding: 40px 28px 72px; }
+  header.top { border-bottom: 1px solid var(--line); padding-bottom: 20px; margin-bottom: 28px; }
+  header.top h1 { font-size: 24px; font-weight: 600; margin: 0 0 6px; letter-spacing: -0.01em; }
+  header.top p { margin: 0; color: var(--muted); font-size: 13px; }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .tag {
+    font-size: 11px; padding: 3px 9px; border-radius: 999px;
+    background: var(--card); border: 1px solid var(--line); color: var(--muted);
+  }
+  .tag.accent { background: var(--accent-soft); border-color: #ccd2ff; color: #3f37c9; }
+  section { margin-bottom: 36px; }
+  h2 { font-size: 17px; font-weight: 600; margin: 0 0 4px; }
+  h2 + .sub { color: var(--muted); font-size: 13px; margin: 0 0 16px; }
+  h3 { font-size: 14px; font-weight: 600; margin: 0 0 8px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px; }
+
+  .layer { display: grid; grid-template-columns: 128px 1fr; gap: 14px; padding: 13px 0; border-top: 1px solid var(--line); }
+  .layer:first-child { border-top: none; padding-top: 0; }
+  .layer:last-child { padding-bottom: 0; }
+  .layer .lname { font-size: 12px; font-weight: 600; color: var(--muted); padding-top: 7px; line-height: 1.5; }
+  .chips { display: flex; flex-wrap: wrap; gap: 7px; }
+  .chip {
+    background: var(--bg); border: 1px solid var(--line); border-radius: 9px;
+    padding: 7px 11px; font-size: 12px; line-height: 1.4; min-width: 0;
+  }
+  .chip b { display: block; font-weight: 600; font-size: 12px; }
+  .chip span { display: block; font-size: 11px; color: var(--muted); margin-top: 1px; }
+  .chip.new { background: var(--accent-soft); border-color: #ccd2ff; }
+
+  .flow { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .flow .col { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+  .flow .col.main { border-top: 3px solid var(--accent); }
+  .flow .col.fallback { border-top: 3px solid var(--teal); }
+  .step { display: flex; gap: 9px; padding: 5px 0; }
+  .num { width: 18px; height: 18px; border-radius: 50%; color: #fff; font-size: 10px; display: grid; place-items: center; flex: 0 0 auto; margin-top: 2px; }
+  .num.m { background: var(--accent); }
+  .num.f { background: var(--teal); }
+  .step .t i { display: block; font-style: normal; font-size: 11px; color: var(--muted); }
+  .note {
+    margin-top: 12px; padding: 11px 13px; border-radius: 10px; font-size: 12.5px; line-height: 1.6;
+    background: var(--accent-soft); border: 1px dashed #ccd2ff;
+  }
+
+  .state { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+  .node { border-radius: 10px; padding: 10px 16px; font-size: 13px; font-weight: 600; border: 1px solid; }
+  .node.pending { background: var(--amber-soft); border-color: #f0d9a8; color: var(--amber); }
+  .node.bound { background: var(--teal-soft); border-color: #b9ded8; color: var(--teal); }
+  .arrow { color: var(--faint); font-size: 13px; }
+  .arrow em { display: block; font-style: normal; font-size: 11px; color: var(--muted); }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 11px; text-transform: none; letter-spacing: 0.02em; color: var(--muted); font-weight: 600; background: var(--bg); }
+  td code, .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; }
+  .dot-new { display: inline-block; width: 7px; height: 7px; border-radius: 2px; background: var(--accent); margin-right: 6px; vertical-align: middle; }
+
+  ul.plain { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+  ul.plain li { display: flex; gap: 10px; font-size: 13px; }
+  ul.plain li .k { flex: 0 0 auto; font-weight: 600; }
+  .risk { display: flex; gap: 9px; font-size: 13px; padding: 11px 0; border-top: 1px solid var(--line); }
+  .risk:first-child { border-top: none; padding-top: 0; }
+  .badge { flex: 0 0 auto; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; height: fit-content; }
+  .badge.ok { background: var(--teal-soft); color: var(--teal); }
+  .badge.warn { background: var(--amber-soft); color: var(--amber); }
+  .badge.info { background: var(--accent-soft); color: #3f37c9; }
+  footer { border-top: 1px solid var(--line); padding-top: 16px; color: var(--faint); font-size: 12px; }
+  @media (max-width: 760px) {
+    .flow { grid-template-columns: 1fr; }
+    .layer { grid-template-columns: 1fr; gap: 6px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="top">
+    <h1>硅宠场域 Pet Smart App · 架构说明</h1>
+    <p>智能宠物设备用户端 App 原型的当前架构、配网双通道机制与改动记录。</p>
+    <div class="meta">
+      <span class="tag">Vite 8 · React 19 · TypeScript 6 · Tailwind 4</span>
+      <span class="tag">Capacitor 8 · Android</span>
+      <span class="tag">appId com.pawlink.petwater</span>
+      <span class="tag accent">配网双通道已落地</span>
+    </div>
+  </header>
+
+  <section>
+    <h2>一、分层架构</h2>
+    <p class="sub">应用没有引入路由库与状态库：App.tsx 是唯一状态容器，renderView() 通过 View 联合类型做视图分发，领域逻辑抽成 src 下的扁平模块。</p>
+    <div class="card">
+      <div class="layer">
+        <div class="lname">入口与路由</div>
+        <div class="chips">
+          <span class="chip"><b>index.html</b><span>承载 #root</span></span>
+          <span class="chip"><b>main.tsx</b><span>挂载 React 根</span></span>
+          <span class="chip"><b>App.tsx</b><span>renderView() 按 View 类型 switch</span></span>
+        </div>
+      </div>
+      <div class="layer">
+        <div class="lname">视图层<br />views/</div>
+        <div class="chips">
+          <span class="chip"><b>Splash</b><span>登录</span></span>
+          <span class="chip"><b>Home</b><span>3D 星球首页</span></span>
+          <span class="chip"><b>Mall</b><span>探针</span></span>
+          <span class="chip"><b>Purchase</b><span>下单</span></span>
+          <span class="chip"><b>Settings</b><span>母舰</span></span>
+          <span class="chip"><b>Device</b><span>饮水机详情</span></span>
+          <span class="chip"><b>PetCapture</b><span>宠物形象</span></span>
+          <span class="chip new"><b>Scan</b><span>四阶段配网向导（改造）</span></span>
+          <span class="chip new"><b>HotspotBind</b><span>保底配网指引（新增）</span></span>
+        </div>
+      </div>
+      <div class="layer">
+        <div class="lname">状态容器</div>
+        <div class="chips">
+          <span class="chip"><b>AppContext · useApp()</b><span>view · navigate · devices · addDevice · removeDevice · pets · account · signIn · signOut</span></span>
+        </div>
+      </div>
+      <div class="layer">
+        <div class="lname">领域模块<br />src/*.ts</div>
+        <div class="chips">
+          <span class="chip new"><b>provisioning.ts</b><span>二维码编解码 · 失败码表 · 分步模拟</span></span>
+          <span class="chip new"><b>hotspot.ts</b><span>保底 AP 通道 · 按需探测</span></span>
+          <span class="chip new"><b>config.ts</b><span>模拟能力总开关</span></span>
+          <span class="chip new"><b>storage.ts</b><span>设备持久化</span></span>
+          <span class="chip"><b>auth.ts</b><span>登录态与设备账号</span></span>
+          <span class="chip"><b>catalog.ts</b><span>产品目录与型号映射</span></span>
+          <span class="chip"><b>deviceData.ts</b><span>饮水机演示数据</span></span>
+          <span class="chip"><b>waterStats.ts</b><span>饮水统计</span></span>
+        </div>
+      </div>
+      <div class="layer">
+        <div class="lname">UI 基础<br />components/</div>
+        <div class="chips">
+          <span class="chip"><b>TopBar</b><span>标题栏</span></span>
+          <span class="chip"><b>LogoMark</b><span>品牌标识</span></span>
+          <span class="chip"><b>HomeScene</b><span>three.js 星球场景</span></span>
+          <span class="chip"><b>WaterDataAnalysis</b><span>水质分析图</span></span>
+        </div>
+      </div>
+      <div class="layer">
+        <div class="lname">运行时与原生</div>
+        <div class="chips">
+          <span class="chip"><b>Vite 8 · React 19 · TS 6</b><span>Tailwind 4 原子样式</span></span>
+          <span class="chip"><b>Capacitor 8</b><span>androidScheme https</span></span>
+          <span class="chip"><b>Android 壳</b><span>当前未挂任何原生插件</span></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>二、配网双通道</h2>
+    <p class="sub">两条通道共用同一套 WiFi 表单、同一套分步状态机与同一套绑定写入逻辑，差异只在下发链路。</p>
+    <div class="flow">
+      <div class="col main">
+        <h3>主通道 · 扫码 + BLE</h3>
+        <p style="margin:0 0 8px;color:var(--muted);font-size:12px;">出厂二维码携带 sn、型号、MAC 与绑定令牌</p>
+        <div class="step"><span class="num m">1</span><span class="t">扫码识别<i>解析二维码得到设备身份</i></span></div>
+        <div class="step"><span class="num m">2</span><span class="t">自动连接 BLE<i>手机直连设备 GATT 会话</i></span></div>
+        <div class="step"><span class="num m">3</span><span class="t">WiFi 配网表单<i>录入 SSID 与密码，校验 2.4G 频段</i></span></div>
+        <div class="step"><span class="num m">4</span><span class="t">BLE 下发配置<i>设备连路由器取 IP 并回执</i></span></div>
+        <div class="step"><span class="num m">5</span><span class="t">云端绑定<i>写入设备列表，返回首页</i></span></div>
+      </div>
+      <div class="col fallback">
+        <h3>保底通道 · AP 热点</h3>
+        <p style="margin:0 0 8px;color:var(--muted);font-size:12px;">二维码丢失、WiFi 变更、BLE 故障时的兜底</p>
+        <div class="step"><span class="num f">1</span><span class="t">设备开热点<i>名为 silifield，密码与热点名相同</i></span></div>
+        <div class="step"><span class="num f">2</span><span class="t">手机连热点<i>需选择「保持连接」并关闭自动切换网络</i></span></div>
+        <div class="step"><span class="num f">3</span><span class="t">App 轮询 192.168.4.1<i>读取 sn、MAC 与设备绑定令牌</i></span></div>
+        <div class="step"><span class="num f">4</span><span class="t">自动添加为「待配网」<i>首页横幅提示并直接给出配网入口</i></span></div>
+        <div class="step"><span class="num f">5</span><span class="t">手动配网并绑定<i>复用同一套表单与状态机</i></span></div>
+      </div>
+    </div>
+    <div class="note">
+      <b>失败回退是自动打通的一环</b>：BLE 阶段失败（搜不到设备 / 连接超时 / 设备无响应）时，失败页会直接渲染「改用保底配网」按钮，一键跳转到 HotspotBind 并自动开启检测，用户不需要自己找入口。
+    </div>
+  </section>
+
+  <section>
+    <h2>三、设备状态机</h2>
+    <p class="sub">设备按 sn 作为唯一键去重，已配网设备不会被保底轮询降级。</p>
+    <div class="card">
+      <div class="state">
+        <span class="node pending">pending · 待配网</span>
+        <span class="arrow">→<em>完成 WiFi 配网并绑定</em></span>
+        <span class="node bound">bound · 已配网</span>
+        <span class="arrow">↺<em>用户移除设备</em></span>
+        <span class="node" style="background:#f1f2f4;border-color:var(--line);color:var(--muted);">从列表删除</span>
+      </div>
+      <ul class="plain" style="margin-top:16px;">
+        <li><span class="k">进入 pending</span><span>保底热点探测到设备后自动写入，wifiSsid 为空，online 为 false。</span></li>
+        <li><span class="k">转移到 bound</span><span>配网成功回调写入 wifiSsid 与绑定来源，online 置为 true，boundAt 保留首次绑定时间。</span></li>
+        <li><span class="k">持久化</span><span>整个设备列表写入 localStorage（键 pet-smart-app:devices），刷新后绑定关系不丢失；退出登录时清空。</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>四、模块职责</h2>
+    <p class="sub">带 <span class="dot-new"></span> 标记的是本轮新增或改造的文件。</p>
+    <div class="card" style="padding:0;overflow:hidden;">
+      <table>
+        <thead>
+          <tr><th style="width:210px;">文件</th><th>职责</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>nav.ts</code></td><td>类型根：View 联合类型、Device（含 sn / mac / wifiSsid / status / source）、DeviceInput、QrPayload、Product、Pet。</td></tr>
+          <tr><td><span class="dot-new"></span><code>provisioning.ts</code></td><td>二维码编解码与容错解析、失败码表（8 个错误码含文案与处理建议）、分步模拟执行器 runSimSteps、令牌推导、设备构造。</td></tr>
+          <tr><td><span class="dot-new"></span><code>hotspot.ts</code></td><td>保底 AP 通道常量、HotspotDevice 模型、保底设备发现与 useHotspotDiscovery 按需探测 Hook，以及真机 HTTP 探测的实现位与注意事项。</td></tr>
+          <tr><td><span class="dot-new"></span><code>config.ts</code></td><td>模拟能力总开关（相机解码、BLE 传输、AP 探测），接入真机时关掉即可，页面与状态机无需改动。</td></tr>
+          <tr><td><span class="dot-new"></span><code>storage.ts</code></td><td>设备列表的 localStorage 读写与结构校验。</td></tr>
+          <tr><td><code>App.tsx</code></td><td>唯一状态容器：登录态、设备列表（按 sn upsert）、导航、视图分发。</td></tr>
+          <tr><td><code>appContext.ts</code></td><td>AppApi 契约。</td></tr>
+          <tr><td><code>views/Scan.tsx</code></td><td>四阶段配网向导，支持 source 为 scan 或 hotspot 进入；失败页根据错误码给出差异化处理动作，扫码通道失败会自动弹出保底配网提示层。</td></tr>
+          <tr><td><code>views/HotspotBind.tsx</code></td><td>保底配网指引页：适用场景、四步操作说明、设备发现状态与手动配网入口。</td></tr>
+          <tr><td><code>views/Home.tsx</code></td><td>3D 首页 + 待配网设备横幅，头部仅保留扫码入口。</td></tr>
+          <tr><td><code>views/Settings.tsx</code></td><td>设备管理列表：状态标签、SN 与 WiFi、待配网设备的配网按钮。</td></tr>
+          <tr><td><code>views/Device.tsx</code></td><td>设备详情；待配网设备顶部展示引导横幅与立即配网入口。</td></tr>
+          <tr><td><code>components/HomeScene.tsx</code></td><td>three.js 星球场景；同型号多台设备按角度错开放置，避免模型重叠。</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>五、保底方案评估</h2>
+    <p class="sub">对「设备自建 silifield 热点供用户手动配网」这一方案的结论与需要注意的点。</p>
+    <div class="card">
+      <div class="risk">
+        <span class="badge ok">方案成立</span>
+        <span>这是行业标准做法（AP 配网 / 兼容模式），米家、涂鸦等都有同类兜底通道。它真正解决的是<b>首次绑定无法扫码</b>和<b>蓝牙模块故障</b>两类问题，必须保留。</span>
+      </div>
+      <div class="risk">
+        <span class="badge warn">需要修正</span>
+        <span><b>SSID 唯一性</b>：所有设备都叫 silifield 时，多台设备同时处于保底模式会出现同名热点，手机无法区分目标。建议出厂热点名带 SN 后缀（silifield-A7C3）。</span>
+      </div>
+      <div class="risk">
+        <span class="badge warn">需要修正</span>
+        <span><b>密码等于 SSID 无安全性</b>：热点名已知且密码公开，附近任何人都能连上并尝试配网。量产版本建议用机身贴纸上的独立密码，或复用二维码里的绑定令牌做一次设备鉴权，令牌不匹配则拒绝配网。</span>
+      </div>
+      <div class="risk">
+        <span class="badge warn">需要修正</span>
+        <span><b>手机连上热点后没有外网</b>：Android 可能自动切回蜂窝网络或原 WiFi，导致探测失败。界面必须明确引导用户选择「保持连接」并关闭自动切换网络，否则这个兜底通道在现场会显得「时灵时不灵」。</span>
+      </div>
+      <div class="risk">
+        <span class="badge info">实现约束</span>
+        <span><b>探测方式</b>：手机连上设备热点后，通过固定网关 http://192.168.4.1/api/info 读取设备信息，这是模组 AP 模式的通用做法。当前 Capacitor 的 androidScheme 为 https，WebView 内请求 http 属于混合内容，接入真机时需要在原生层放开。</span>
+      </div>
+      <div class="risk">
+        <span class="badge info">认知修正</span>
+        <span><b>「家里 WiFi 变更」其实不需要走兜底通道</b>：设备已在用户局域网内，正常应由云端下发新配置；设备侧长按重置键重回 AP 模式只是补救手段。这条场景的价值在于「设备已被重置且二维码丢了」，不要把它当作常规换网路径来宣传。</span>
+      </div>
+      <div class="risk">
+        <span class="badge info">体验缺口</span>
+        <span><b>配网结果无法即时确认</b>：设备切到 STA 模式后热点消失，手机回到原网络，App 已无法直接读取结果，只能等设备上线后由云端回调。当前演示用「请切回原 WiFi」收尾，真机阶段需要补一条云端状态回执。</span>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    本文档由代码现状自动梳理生成，描述的是当前工作区代码，含本轮新增的配网双通道与保底热点能力。
+  </footer>
+
+</div>
+</body>
+</html>

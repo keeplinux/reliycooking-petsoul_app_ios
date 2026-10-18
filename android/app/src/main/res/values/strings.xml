@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">silifield</string>
+    <string name="title_activity_main">silifield</string>
+    <string name="package_name">com.pawlink.petwater</string>
+    <string name="custom_url_scheme">com.pawlink.petwater</string>
+</resources>

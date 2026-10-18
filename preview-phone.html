@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>硅宠场域 · 真机预览</title>
+    <style>
+      :root {
+        --page: #eceae7;
+        --ink: #171717;
+        --frame: #171717;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+        padding: 18px 16px 20px;
+        background: radial-gradient(120% 80% at 50% 0%, #f7f7f8 0%, var(--page) 70%);
+        color: var(--ink);
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
+          'Hiragino Sans GB', 'Microsoft YaHei', system-ui, sans-serif;
+        overflow: hidden;
+      }
+      header {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        flex-wrap: wrap;
+        justify-content: center;
+        flex: 0 0 auto;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+      }
+      .brand i {
+        display: grid;
+        place-items: center;
+        width: 26px;
+        height: 26px;
+        border-radius: 8px;
+        background: var(--ink);
+        color: #fff;
+        font-size: 12px;
+        font-style: normal;
+      }
+      .brand small {
+        display: block;
+        font-size: 9px;
+        font-weight: 500;
+        letter-spacing: 0.28em;
+        color: rgba(23, 23, 23, 0.4);
+        text-transform: uppercase;
+      }
+      .seg {
+        display: grid;
+        grid-auto-flow: column;
+        gap: 2px;
+        padding: 3px;
+        border-radius: 10px;
+        background: rgba(23, 23, 23, 0.06);
+      }
+      .seg button {
+        border: 0;
+        border-radius: 7px;
+        padding: 6px 12px;
+        background: transparent;
+        color: rgba(23, 23, 23, 0.55);
+        font-size: 12px;
+        font-weight: 500;
+        font-family: inherit;
+        cursor: pointer;
+      }
+      .seg button[aria-pressed='true'] {
+        background: #fff;
+        color: var(--ink);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+      }
+      .link {
+        font-size: 12px;
+        color: rgba(23, 23, 23, 0.5);
+        text-decoration: none;
+        border-bottom: 1px solid rgba(23, 23, 23, 0.2);
+      }
+      .link:hover {
+        color: var(--ink);
+      }
+      .stage {
+        flex: 1 1 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 0;
+        width: 100%;
+      }
+      .phone {
+        position: relative;
+        height: min(844px, calc(100dvh - 150px));
+        aspect-ratio: 390 / 844;
+        padding: 9px;
+        border-radius: 44px;
+        background: var(--frame);
+        box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.45);
+      }
+      .phone::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        bottom: 8px;
+        width: 118px;
+        height: 4px;
+        transform: translateX(-50%);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.35);
+        pointer-events: none;
+        z-index: 4;
+      }
+      .screen {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        border-radius: 35px;
+        background: #f7f7f8;
+      }
+      .notch {
+        position: absolute;
+        z-index: 3;
+        top: 9px;
+        left: 50%;
+        width: 106px;
+        height: 25px;
+        transform: translateX(-50%);
+        border-radius: 999px;
+        background: var(--frame);
+        pointer-events: none;
+      }
+      iframe {
+        width: 100%;
+        height: 100%;
+        border: 0;
+        background: #f7f7f8;
+      }
+      .hint {
+        flex: 0 0 auto;
+        max-width: 620px;
+        margin: 0;
+        text-align: center;
+        font-size: 12px;
+        line-height: 1.7;
+        color: rgba(23, 23, 23, 0.5);
+      }
+      .hint b {
+        color: rgba(23, 23, 23, 0.78);
+        font-weight: 600;
+      }
+      body[data-mode='full'] .phone {
+        height: min(844px, calc(100dvh - 150px));
+        aspect-ratio: auto;
+        width: min(390px, 100%);
+        padding: 0;
+        border-radius: 28px;
+        background: transparent;
+        box-shadow: 0 20px 50px -20px rgba(0, 0, 0, 0.35);
+      }
+      body[data-mode='full'] .phone::after,
+      body[data-mode='full'] .notch {
+        display: none;
+      }
+      body[data-mode='full'] .screen {
+        border-radius: 28px;
+      }
+      @media (max-width: 520px) {
+        .phone {
+          height: min(844px, calc(100dvh - 170px));
+          aspect-ratio: auto;
+          width: 100%;
+          max-width: 390px;
+          padding: 0;
+          border-radius: 0;
+          background: transparent;
+          box-shadow: none;
+        }
+        .phone::after,
+        .notch {
+          display: none;
+        }
+        .screen {
+          border-radius: 0;
+        }
+      }
+    </style>
+  </head>
+  <body data-mode="phone">
+    <header>
+      <span class="brand">
+        <i>宠</i>
+        <span>
+          硅宠场域
+          <small>silifield</small>
+        </span>
+      </span>
+      <div class="seg" role="group" aria-label="预览尺寸">
+        <button type="button" data-size="phone" aria-pressed="true">手机外壳</button>
+        <button type="button" data-size="full" aria-pressed="false">铺满</button>
+      </div>
+      <a class="link" href="/" target="_blank" rel="noreferrer">新窗口打开</a>
+    </header>
+
+    <div class="stage">
+      <div class="phone">
+        <span class="notch"></span>
+        <div class="screen">
+          <iframe src="/" title="硅宠场域 App 预览"></iframe>
+        </div>
+      </div>
+    </div>
+
+    <p class="hint">
+      预览已按手机安全区留白：顶部不会被灵动岛遮挡，底部不会被 home 指示条压住。
+      直接点按即可操作；<b>扫码页</b>点取景框开始扫码，<b>配网失败</b>后会自动提示改用保底配网。
+      <b>首页星球</b>拖动/缩放松手约 1 秒后视角自动记忆为默认；拉远到最远时星球回正居中。
+    </p>
+
+    <script>
+      document.querySelectorAll('.seg button').forEach(function (button) {
+        button.addEventListener('click', function () {
+          var size = button.getAttribute('data-size')
+          document.body.setAttribute('data-mode', size)
+          document.querySelectorAll('.seg button').forEach(function (item) {
+            item.setAttribute('aria-pressed', String(item === button))
+          })
+        })
+      })
+    </script>
+  </body>
+</html>
