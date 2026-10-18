@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1.0",
+  "deviceId": "SF000002",
+  "bootId": "22914401-f863-47f3-9ad7-d7bf50b72464",
+  "seq": 5,
+  "ts": null,
+  "uptimeMs": 1000,
+  "kind": "ack",
+  "payload": {
+    "commandId": "edc5c481-44cd-46ea-8c0d-6f40d23feae2",
+    "status": "rejected",
+    "errorCode": "unsupported",
+    "result": null
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "1.0",
+  "deviceId": "SF000002",
+  "bootId": "22914401-f863-47f3-9ad7-d7bf50b72464",
+  "seq": 4,
+  "ts": null,
+  "uptimeMs": 1000,
+  "kind": "command",
+  "payload": {
+    "commandId": "edc5c481-44cd-46ea-8c0d-6f40d23feae2",
+    "name": "camera.snapshot",
+    "issuedAt": "2026-10-18T00:00:00Z",
+    "expiresAt": "2026-10-18T00:00:30Z",
+    "params": {}
+  }
+}

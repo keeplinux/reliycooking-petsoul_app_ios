@@ -1,0 +1,1253 @@
+{
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "deviceId": {
+      "type": "string",
+      "pattern": "^[A-Z0-9-]{4,32}$"
+    },
+    "bootId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "seq": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "ts": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "uptimeMs": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "kind": {
+      "enum": [
+        "telemetry",
+        "capabilities",
+        "event",
+        "presence",
+        "command",
+        "ack"
+      ]
+    },
+    "payload": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "deviceId",
+    "bootId",
+    "seq",
+    "ts",
+    "uptimeMs",
+    "kind",
+    "payload"
+  ],
+  "additionalProperties": true,
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "urn:silifield:water-device:1.0",
+  "title": "Reserved water device contract 1.0",
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "telemetry"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "water": {
+                "type": "object",
+                "properties": {
+                  "clean": {
+                    "type": "object",
+                    "properties": {
+                      "mode": {
+                        "enum": [
+                          "unknown",
+                          "none",
+                          "binary",
+                          "continuous"
+                        ]
+                      },
+                      "quality": {
+                        "enum": [
+                          "ok",
+                          "not_installed",
+                          "not_supported",
+                          "unavailable",
+                          "fault",
+                          "stale",
+                          "uncalibrated"
+                        ]
+                      },
+                      "percent": {
+                        "type": [
+                          "number",
+                          "null"
+                        ],
+                        "minimum": 0,
+                        "maximum": 100
+                      },
+                      "heightMm": {
+                        "type": [
+                          "number",
+                          "null"
+                        ],
+                        "minimum": 0
+                      },
+                      "volumeMl": {
+                        "type": [
+                          "number",
+                          "null"
+                        ],
+                        "minimum": 0
+                      },
+                      "low": {
+                        "type": [
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "high": {
+                        "type": [
+                          "boolean",
+                          "null"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "mode",
+                      "quality",
+                      "percent",
+                      "heightMm",
+                      "volumeMl",
+                      "low",
+                      "high"
+                    ],
+                    "additionalProperties": false,
+                    "allOf": [
+                      {
+                        "if": {
+                          "properties": {
+                            "quality": {
+                              "not": {
+                                "const": "ok"
+                              }
+                            }
+                          }
+                        },
+                        "then": {
+                          "properties": {
+                            "percent": {
+                              "type": "null"
+                            },
+                            "heightMm": {
+                              "type": "null"
+                            },
+                            "volumeMl": {
+                              "type": "null"
+                            },
+                            "low": {
+                              "type": "null"
+                            },
+                            "high": {
+                              "type": "null"
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "if": {
+                          "properties": {
+                            "mode": {
+                              "enum": [
+                                "unknown",
+                                "none"
+                              ]
+                            }
+                          }
+                        },
+                        "then": {
+                          "properties": {
+                            "quality": {
+                              "not": {
+                                "const": "ok"
+                              }
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "if": {
+                          "properties": {
+                            "mode": {
+                              "const": "binary"
+                            }
+                          }
+                        },
+                        "then": {
+                          "properties": {
+                            "percent": {
+                              "type": "null"
+                            },
+                            "heightMm": {
+                              "type": "null"
+                            },
+                            "volumeMl": {
+                              "type": "null"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "waste": {
+                    "type": "object",
+                    "properties": {
+                      "mode": {
+                        "enum": [
+                          "unknown",
+                          "none",
+                          "binary",
+                          "continuous"
+                        ]
+                      },
+                      "quality": {
+                        "enum": [
+                          "ok",
+                          "not_installed",
+                          "not_supported",
+                          "unavailable",
+                          "fault",
+                          "stale",
+                          "uncalibrated"
+                        ]
+                      },
+                      "percent": {
+                        "type": [
+                          "number",
+                          "null"
+                        ],
+                        "minimum": 0,
+                        "maximum": 100
+                      },
+                      "heightMm": {
+                        "type": [
+                          "number",
+                          "null"
+                        ],
+                        "minimum": 0
+                      },
+                      "volumeMl": {
+                        "type": [
+                          "number",
+                          "null"
+                        ],
+                        "minimum": 0
+                      },
+                      "low": {
+                        "type": [
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "high": {
+                        "type": [
+                          "boolean",
+                          "null"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "mode",
+                      "quality",
+                      "percent",
+                      "heightMm",
+                      "volumeMl",
+                      "low",
+                      "high"
+                    ],
+                    "additionalProperties": false,
+                    "allOf": [
+                      {
+                        "if": {
+                          "properties": {
+                            "quality": {
+                              "not": {
+                                "const": "ok"
+                              }
+                            }
+                          }
+                        },
+                        "then": {
+                          "properties": {
+                            "percent": {
+                              "type": "null"
+                            },
+                            "heightMm": {
+                              "type": "null"
+                            },
+                            "volumeMl": {
+                              "type": "null"
+                            },
+                            "low": {
+                              "type": "null"
+                            },
+                            "high": {
+                              "type": "null"
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "if": {
+                          "properties": {
+                            "mode": {
+                              "enum": [
+                                "unknown",
+                                "none"
+                              ]
+                            }
+                          }
+                        },
+                        "then": {
+                          "properties": {
+                            "quality": {
+                              "not": {
+                                "const": "ok"
+                              }
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "if": {
+                          "properties": {
+                            "mode": {
+                              "const": "binary"
+                            }
+                          }
+                        },
+                        "then": {
+                          "properties": {
+                            "percent": {
+                              "type": "null"
+                            },
+                            "heightMm": {
+                              "type": "null"
+                            },
+                            "volumeMl": {
+                              "type": "null"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "tray": {
+                    "type": "object",
+                    "properties": {
+                      "mode": {
+                        "enum": [
+                          "unknown",
+                          "none",
+                          "binary",
+                          "continuous"
+                        ]
+                      },
+                      "quality": {
+                        "enum": [
+                          "ok",
+                          "not_installed",
+                          "not_supported",
+                          "unavailable",
+                          "fault",
+                          "stale",
+                          "uncalibrated"
+                        ]
+                      },
+                      "percent": {
+                        "type": [
+                          "number",
+                          "null"
+                        ],
+                        "minimum": 0,
+                        "maximum": 100
+                      },
+                      "heightMm": {
+                        "type": [
+                          "number",
+                          "null"
+                        ],
+                        "minimum": 0
+                      },
+                      "volumeMl": {
+                        "type": [
+                          "number",
+                          "null"
+                        ],
+                        "minimum": 0
+                      },
+                      "low": {
+                        "type": [
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "high": {
+                        "type": [
+                          "boolean",
+                          "null"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "mode",
+                      "quality",
+                      "percent",
+                      "heightMm",
+                      "volumeMl",
+                      "low",
+                      "high"
+                    ],
+                    "additionalProperties": false,
+                    "allOf": [
+                      {
+                        "if": {
+                          "properties": {
+                            "quality": {
+                              "not": {
+                                "const": "ok"
+                              }
+                            }
+                          }
+                        },
+                        "then": {
+                          "properties": {
+                            "percent": {
+                              "type": "null"
+                            },
+                            "heightMm": {
+                              "type": "null"
+                            },
+                            "volumeMl": {
+                              "type": "null"
+                            },
+                            "low": {
+                              "type": "null"
+                            },
+                            "high": {
+                              "type": "null"
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "if": {
+                          "properties": {
+                            "mode": {
+                              "enum": [
+                                "unknown",
+                                "none"
+                              ]
+                            }
+                          }
+                        },
+                        "then": {
+                          "properties": {
+                            "quality": {
+                              "not": {
+                                "const": "ok"
+                              }
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "if": {
+                          "properties": {
+                            "mode": {
+                              "const": "binary"
+                            }
+                          }
+                        },
+                        "then": {
+                          "properties": {
+                            "percent": {
+                              "type": "null"
+                            },
+                            "heightMm": {
+                              "type": "null"
+                            },
+                            "volumeMl": {
+                              "type": "null"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "clean",
+                  "waste",
+                  "tray"
+                ],
+                "additionalProperties": false
+              },
+              "temperature": {
+                "type": "object",
+                "properties": {
+                  "water": {
+                    "type": "object",
+                    "properties": {
+                      "quality": {
+                        "enum": [
+                          "ok",
+                          "not_installed",
+                          "not_supported",
+                          "unavailable",
+                          "fault",
+                          "stale",
+                          "uncalibrated"
+                        ]
+                      },
+                      "value": {
+                        "type": [
+                          "number",
+                          "null"
+                        ]
+                      },
+                      "unit": {
+                        "enum": [
+                          "C"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "quality",
+                      "value",
+                      "unit"
+                    ],
+                    "additionalProperties": false,
+                    "allOf": [
+                      {
+                        "if": {
+                          "properties": {
+                            "quality": {
+                              "const": "ok"
+                            }
+                          }
+                        },
+                        "then": {
+                          "properties": {
+                            "value": {
+                              "type": "number"
+                            }
+                          }
+                        },
+                        "else": {
+                          "properties": {
+                            "value": {
+                              "type": "null"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "ambient": {
+                    "type": "object",
+                    "properties": {
+                      "quality": {
+                        "enum": [
+                          "ok",
+                          "not_installed",
+                          "not_supported",
+                          "unavailable",
+                          "fault",
+                          "stale",
+                          "uncalibrated"
+                        ]
+                      },
+                      "value": {
+                        "type": [
+                          "number",
+                          "null"
+                        ]
+                      },
+                      "unit": {
+                        "enum": [
+                          "C"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "quality",
+                      "value",
+                      "unit"
+                    ],
+                    "additionalProperties": false,
+                    "allOf": [
+                      {
+                        "if": {
+                          "properties": {
+                            "quality": {
+                              "const": "ok"
+                            }
+                          }
+                        },
+                        "then": {
+                          "properties": {
+                            "value": {
+                              "type": "number"
+                            }
+                          }
+                        },
+                        "else": {
+                          "properties": {
+                            "value": {
+                              "type": "null"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "chip": {
+                    "type": "object",
+                    "properties": {
+                      "quality": {
+                        "enum": [
+                          "ok",
+                          "not_installed",
+                          "not_supported",
+                          "unavailable",
+                          "fault",
+                          "stale",
+                          "uncalibrated"
+                        ]
+                      },
+                      "value": {
+                        "type": [
+                          "number",
+                          "null"
+                        ]
+                      },
+                      "unit": {
+                        "enum": [
+                          "C"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "quality",
+                      "value",
+                      "unit"
+                    ],
+                    "additionalProperties": false,
+                    "allOf": [
+                      {
+                        "if": {
+                          "properties": {
+                            "quality": {
+                              "const": "ok"
+                            }
+                          }
+                        },
+                        "then": {
+                          "properties": {
+                            "value": {
+                              "type": "number"
+                            }
+                          }
+                        },
+                        "else": {
+                          "properties": {
+                            "value": {
+                              "type": "null"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "water",
+                  "ambient",
+                  "chip"
+                ],
+                "additionalProperties": false
+              },
+              "storage": {
+                "type": "object",
+                "properties": {
+                  "quality": {
+                    "enum": [
+                      "ok",
+                      "not_installed",
+                      "not_supported",
+                      "unavailable",
+                      "fault",
+                      "stale",
+                      "uncalibrated"
+                    ]
+                  },
+                  "mounted": {
+                    "type": [
+                      "boolean",
+                      "null"
+                    ]
+                  },
+                  "totalBytes": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
+                    "minimum": 0
+                  },
+                  "freeBytes": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
+                    "minimum": 0
+                  },
+                  "readOnly": {
+                    "type": [
+                      "boolean",
+                      "null"
+                    ]
+                  },
+                  "recording": {
+                    "type": [
+                      "boolean",
+                      "null"
+                    ]
+                  },
+                  "errorCode": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                },
+                "required": [
+                  "quality",
+                  "mounted",
+                  "totalBytes",
+                  "freeBytes",
+                  "readOnly",
+                  "recording",
+                  "errorCode"
+                ],
+                "additionalProperties": false
+              },
+              "rgb": {
+                "type": "object",
+                "properties": {
+                  "quality": {
+                    "enum": [
+                      "ok",
+                      "not_installed",
+                      "not_supported",
+                      "unavailable",
+                      "fault",
+                      "stale",
+                      "uncalibrated"
+                    ]
+                  },
+                  "scene": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "brightness": {
+                    "type": [
+                      "number",
+                      "null"
+                    ],
+                    "minimum": 0,
+                    "maximum": 100
+                  }
+                },
+                "required": [
+                  "quality",
+                  "scene",
+                  "brightness"
+                ],
+                "additionalProperties": false
+              },
+              "network": {
+                "type": "object",
+                "properties": {
+                  "wifiConnected": {
+                    "type": [
+                      "boolean",
+                      "null"
+                    ]
+                  },
+                  "ip": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "rssiDbm": {
+                    "type": [
+                      "number",
+                      "null"
+                    ],
+                    "maximum": 0
+                  },
+                  "internetReachable": {
+                    "type": [
+                      "boolean",
+                      "null"
+                    ]
+                  },
+                  "cloudConnected": {
+                    "type": [
+                      "boolean",
+                      "null"
+                    ]
+                  }
+                },
+                "required": [
+                  "wifiConnected",
+                  "ip",
+                  "rssiDbm",
+                  "internetReachable",
+                  "cloudConnected"
+                ],
+                "additionalProperties": false
+              },
+              "audio": {
+                "type": "object",
+                "properties": {
+                  "micAvailable": {
+                    "type": [
+                      "boolean",
+                      "null"
+                    ]
+                  },
+                  "speakerAvailable": {
+                    "type": [
+                      "boolean",
+                      "null"
+                    ]
+                  },
+                  "micMuted": {
+                    "type": [
+                      "boolean",
+                      "null"
+                    ]
+                  },
+                  "speakerVolume": {
+                    "type": [
+                      "number",
+                      "null"
+                    ],
+                    "minimum": 0,
+                    "maximum": 100
+                  },
+                  "captureActive": {
+                    "type": [
+                      "boolean",
+                      "null"
+                    ]
+                  },
+                  "playbackActive": {
+                    "type": [
+                      "boolean",
+                      "null"
+                    ]
+                  }
+                },
+                "required": [
+                  "micAvailable",
+                  "speakerAvailable",
+                  "micMuted",
+                  "speakerVolume",
+                  "captureActive",
+                  "playbackActive"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "water",
+              "temperature",
+              "storage",
+              "rgb",
+              "network",
+              "audio"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "capabilities"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "firmwareVersion": {
+                "type": "string"
+              },
+              "hardwareRevision": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "features": {
+                "type": "object",
+                "properties": {
+                  "water": {
+                    "type": "object",
+                    "properties": {
+                      "supported": {
+                        "type": "boolean"
+                      },
+                      "limits": {
+                        "type": "object"
+                      }
+                    },
+                    "required": [
+                      "supported",
+                      "limits"
+                    ],
+                    "additionalProperties": true
+                  },
+                  "temperature": {
+                    "type": "object",
+                    "properties": {
+                      "supported": {
+                        "type": "boolean"
+                      },
+                      "limits": {
+                        "type": "object"
+                      }
+                    },
+                    "required": [
+                      "supported",
+                      "limits"
+                    ],
+                    "additionalProperties": true
+                  },
+                  "camera": {
+                    "type": "object",
+                    "properties": {
+                      "supported": {
+                        "type": "boolean"
+                      },
+                      "limits": {
+                        "type": "object"
+                      }
+                    },
+                    "required": [
+                      "supported",
+                      "limits"
+                    ],
+                    "additionalProperties": true
+                  },
+                  "storage": {
+                    "type": "object",
+                    "properties": {
+                      "supported": {
+                        "type": "boolean"
+                      },
+                      "limits": {
+                        "type": "object"
+                      }
+                    },
+                    "required": [
+                      "supported",
+                      "limits"
+                    ],
+                    "additionalProperties": true
+                  },
+                  "rgb": {
+                    "type": "object",
+                    "properties": {
+                      "supported": {
+                        "type": "boolean"
+                      },
+                      "limits": {
+                        "type": "object"
+                      }
+                    },
+                    "required": [
+                      "supported",
+                      "limits"
+                    ],
+                    "additionalProperties": true
+                  },
+                  "audio": {
+                    "type": "object",
+                    "properties": {
+                      "supported": {
+                        "type": "boolean"
+                      },
+                      "limits": {
+                        "type": "object"
+                      }
+                    },
+                    "required": [
+                      "supported",
+                      "limits"
+                    ],
+                    "additionalProperties": true
+                  }
+                },
+                "required": [
+                  "water",
+                  "temperature",
+                  "camera",
+                  "storage",
+                  "rgb",
+                  "audio"
+                ],
+                "additionalProperties": false
+              },
+              "commands": {
+                "type": "array",
+                "uniqueItems": true,
+                "items": {
+                  "enum": [
+                    "state.get",
+                    "camera.snapshot",
+                    "camera.stream.start",
+                    "camera.stream.stop",
+                    "storage.list",
+                    "rgb.set",
+                    "audio.capture.start",
+                    "audio.capture.stop",
+                    "audio.play",
+                    "audio.stop",
+                    "audio.volume.set"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "firmwareVersion",
+              "hardwareRevision",
+              "features",
+              "commands"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "event"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "minLength": 1
+              },
+              "severity": {
+                "enum": [
+                  "info",
+                  "warning",
+                  "critical"
+                ]
+              },
+              "active": {
+                "type": "boolean"
+              },
+              "details": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "code",
+              "severity",
+              "active",
+              "details"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "presence"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "online": {
+                "type": "boolean"
+              },
+              "reason": {
+                "enum": [
+                  "connected",
+                  "shutdown",
+                  "will"
+                ]
+              }
+            },
+            "required": [
+              "online",
+              "reason"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "command"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "commandId": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "name": {
+                "enum": [
+                  "state.get",
+                  "camera.snapshot",
+                  "camera.stream.start",
+                  "camera.stream.stop",
+                  "storage.list",
+                  "rgb.set",
+                  "audio.capture.start",
+                  "audio.capture.stop",
+                  "audio.play",
+                  "audio.stop",
+                  "audio.volume.set"
+                ]
+              },
+              "issuedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "expiresAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "params": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "commandId",
+              "name",
+              "issuedAt",
+              "expiresAt",
+              "params"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "ack"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "commandId": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "status": {
+                "enum": [
+                  "accepted",
+                  "succeeded",
+                  "failed",
+                  "rejected"
+                ]
+              },
+              "errorCode": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "result": {
+                "type": [
+                  "object",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "commandId",
+              "status",
+              "errorCode",
+              "result"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    }
+  ]
+}

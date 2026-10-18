@@ -1,0 +1,86 @@
+{
+  "schemaVersion": "1.0",
+  "deviceId": "SF000002",
+  "bootId": "22914401-f863-47f3-9ad7-d7bf50b72464",
+  "seq": 0,
+  "ts": null,
+  "uptimeMs": 1000,
+  "kind": "telemetry",
+  "payload": {
+    "water": {
+      "clean": {
+        "mode": "unknown",
+        "quality": "not_installed",
+        "percent": null,
+        "heightMm": null,
+        "volumeMl": null,
+        "low": null,
+        "high": null
+      },
+      "waste": {
+        "mode": "unknown",
+        "quality": "not_installed",
+        "percent": null,
+        "heightMm": null,
+        "volumeMl": null,
+        "low": null,
+        "high": null
+      },
+      "tray": {
+        "mode": "unknown",
+        "quality": "not_installed",
+        "percent": null,
+        "heightMm": null,
+        "volumeMl": null,
+        "low": null,
+        "high": null
+      }
+    },
+    "temperature": {
+      "water": {
+        "quality": "not_installed",
+        "value": null,
+        "unit": "C"
+      },
+      "ambient": {
+        "quality": "not_installed",
+        "value": null,
+        "unit": "C"
+      },
+      "chip": {
+        "quality": "not_installed",
+        "value": null,
+        "unit": "C"
+      }
+    },
+    "storage": {
+      "quality": "not_installed",
+      "mounted": false,
+      "totalBytes": null,
+      "freeBytes": null,
+      "readOnly": null,
+      "recording": false,
+      "errorCode": null
+    },
+    "rgb": {
+      "quality": "not_installed",
+      "scene": null,
+      "brightness": null
+    },
+    "network": {
+      "wifiConnected": true,
+      "ip": "192.168.1.20",
+      "rssiDbm": -60,
+      "internetReachable": null,
+      "cloudConnected": true
+    },
+    "audio": {
+      "micAvailable": null,
+      "speakerAvailable": null,
+      "micMuted": null,
+      "speakerVolume": null,
+      "captureActive": null,
+      "playbackActive": null
+    }
+  }
+}

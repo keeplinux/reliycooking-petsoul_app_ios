@@ -1,6 +1,6 @@
 # 硅宠 BLE 配网协议 v1
 
-本协议由项目定义，配套 App 1.3.18 (36) 与 `firmware/esp32-provisioning` 参考固件。适用于 ESP32 DevKit（4MB Flash、2.4GHz WiFi）。其他芯片需实现同样的 GATT 与报文，不代表任意市售设备可以直接接入。
+本协议由项目定义，配套 App 1.3.18 (36) 与 `firmware/esp32-provisioning` 参考固件。默认参考目标已调整为 ESP32-S3-DevKitC-1（仅参考板配置，实际模块 Flash/PSRAM 规格待确认；2.4GHz WiFi）。其他芯片需实现同样的 GATT 与报文，不代表任意市售设备可以直接接入。
 
 ## 工厂二维码与配置
 
@@ -43,10 +43,12 @@ App 等待45秒，超时、解密失败、连接中断或失败回执均不添�
 
 ## 参考固件边界
 
-- 已实际编译：espressif32 6.10.0 / Arduino ESP32 / ArduinoJson 7.3.1，esp32dev，huge_app 分区；Flash约1.54MB。
+- 已实际编译：espressif32 6.10.0 / Arduino ESP32 / ArduinoJson 7.3.1，默认 ESP32-S3-DevKitC-1，huge_app 分区；保留 esp32dev 兼容环境。具体构建结果见饮水机开发资料。
 - WiFi 凭据由 ESP32 SDK 持久化，断电后可重新连接；生产设备还需要 Flash/NVS 加密、密钥灌装与更换、恢复出厂与所有权转移策略。
 - 二维码相当于设备访问凭据，必须通过可信机身标签交付。BLE 广播和 Info 不含 WiFi 密码，配置在应用层加密；本版本未实现云端所有权校验、限速或完整量产安全认证。
 - 未实现 AP 热点配网、云端绑定、水泵/灯光控制、真实饮水传感、实时视频。App 不将这些未收到的读数伪造为真实数据。
 - 当前没有连接实际 ESP32，不能将编译与协议测试写成实机联调通过；出厂标签必须与实际烧录的 config 使用同一密钥。
 
 依赖文档：[Capacitor Barcode Scanner](https://capacitorjs.com/docs/apis/barcode-scanner)、[Bluetooth LE](https://github.com/capacitor-community/bluetooth-le)。
+
+ESP32-S3 饮水机业务协议、外设预留与开发步骤见 [硬件开发入口](hardware/README.md)。BLE v1 保持兼容，业务协议不复用配网 Status 特征。

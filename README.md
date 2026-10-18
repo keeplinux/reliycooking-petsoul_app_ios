@@ -72,3 +72,7 @@ xcodebuild -project tests/ios/ParityTests.xcodeproj -scheme ParityUITests -desti
 迁移结果与截图见 [验收记录](docs/verification/MIGRATION.md)。
 
 苹果真机签名打包见 [iOS 发布说明](docs/IOS_RELEASE.md)，执行 `npm run release:ios`。GitHub 下载 IPA 仍需有效苹果签名与设备授权。
+
+## ESP32-S3 饮水机开发
+
+保持现有 App 界面，硬件以 ESP32-S3 为目标。传感器、摄像头/视频、TF、灯语、网络/云端和音频均已整理预留合同，详见 [硬件开发资料](docs/hardware/README.md)。当前固件仍只实现 BLE 配网，业务数据和外设功能尚未实现。执行 `npm run verify:water-protocol` 校验协议样例。

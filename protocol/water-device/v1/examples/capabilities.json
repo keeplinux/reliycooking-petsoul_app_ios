@@ -1,0 +1,63 @@
+{
+  "schemaVersion": "1.0",
+  "deviceId": "SF000002",
+  "bootId": "22914401-f863-47f3-9ad7-d7bf50b72464",
+  "seq": 1,
+  "ts": null,
+  "uptimeMs": 1000,
+  "kind": "capabilities",
+  "payload": {
+    "firmwareVersion": "future-example",
+    "hardwareRevision": null,
+    "features": {
+      "water": {
+        "supported": false,
+        "limits": {
+          "cleanMode": "unknown",
+          "wasteMode": "unknown",
+          "trayMode": "unknown"
+        }
+      },
+      "temperature": {
+        "supported": false,
+        "limits": {
+          "sensors": []
+        }
+      },
+      "camera": {
+        "supported": false,
+        "limits": {
+          "snapshotFormats": [],
+          "streamFormats": [],
+          "resolutions": [],
+          "maxFps": null
+        }
+      },
+      "storage": {
+        "supported": false,
+        "limits": {
+          "filesystems": [],
+          "maxCapacityBytes": null
+        }
+      },
+      "rgb": {
+        "supported": false,
+        "limits": {
+          "ledCount": null,
+          "scenes": []
+        }
+      },
+      "audio": {
+        "supported": false,
+        "limits": {
+          "codecs": [],
+          "sampleRatesHz": [],
+          "sampleBits": [],
+          "channels": [],
+          "fullDuplex": false
+        }
+      }
+    },
+    "commands": []
+  }
+}

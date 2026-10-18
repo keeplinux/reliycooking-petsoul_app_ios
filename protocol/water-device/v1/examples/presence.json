@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1.0",
+  "deviceId": "SF000002",
+  "bootId": "22914401-f863-47f3-9ad7-d7bf50b72464",
+  "seq": 2,
+  "ts": null,
+  "uptimeMs": 1000,
+  "kind": "presence",
+  "payload": {
+    "online": false,
+    "reason": "will"
+  }
+}
