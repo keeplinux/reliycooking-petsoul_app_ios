@@ -1,0 +1,22 @@
+{
+  "version": "1.3.18",
+  "files": {
+    "assets/index-CXp9jK8p.css": "d46e87172014a35b2ae54887977f95d852af14d7d380b815a78a1a9ff8208950",
+    "assets/index-DFj_hjdO.js": "9818325e38dd0d96901140960d5f91bd17330b96b1582ac499d72e655bdaa651",
+    "assets/web-BwYoPIWP.js": "15cc57cb64cdc52b929a4bdd54126c002ee04601acb419ae9a03ad174ad845f9",
+    "assets/web-u6z7aJ-D.js": "49e5c7b33feb70408cea36424b641cc2c523c4bf657750bd9a1f96cf6cfcc849",
+    "clips/clip-nuomi-day.jpg": "ebde0d578801050daa3b48d50557dd6ac57d13db54e640019411bc261e7a675e",
+    "clips/clip-nuomi-night.jpg": "f03f8dd50319b63702405e3e09e82b3a223f075429b36287c0e20192f3fc1370",
+    "clips/clip-tuanzi.jpg": "c1cfc77fe9dc35f485f29d0b25164a4a5b53b91b9e97796cdf28d14dcecbd375",
+    "favicon.svg": "61bc9a161de58248288e6905425d7180f0624c2865007b97d763fdac12043a66",
+    "fonts/LICENSE-huiwen-mincho.txt": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
+    "fonts/huiwen-mincho.woff2": "ad9f2a86087741f943b5995b9aa10105c871657aba10d1172a61a91ea58f58d7",
+    "icons.svg": "b45fa506195cfcdef406ba9f0c77b36ddc1a7c224040926ec70abc2fdea7b93a",
+    "index.html": "362ab85fb4edc2a5b6202f1492fca32720cd6305eaed830a087e456038dfbe35",
+    "products/auto-litter.svg": "71a45776dc45548214c05cdc17e3a0a83abb913f9767ba1eba49f242ecbb20e6",
+    "products/pet-camera.svg": "c8cfcdbf2eedf46e7822e55bf334bbaf296ccd7b84a5ced44e322c65e334d072",
+    "products/pet-tracker.svg": "3acb48fc1111737a9eccd67aa1b262fe0dfdf2673fc5f39e0c1b950a87f6ceca",
+    "products/smart-feeder.svg": "301076014f6f86683b63def433734068ea71781a20de661c6460f69dc5d8316c",
+    "products/smart-water.svg": "61ce71b1d68a2a017059900cf97ac27bd35480a31f38683e50e81697ab502947"
+  }
+}

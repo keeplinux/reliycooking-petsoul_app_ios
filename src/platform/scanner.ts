@@ -2,7 +2,11 @@ import { Capacitor } from '@capacitor/core'
 import { CapacitorBarcodeScanner, CapacitorBarcodeScannerTypeHint } from '@capacitor/barcode-scanner'
 import jsQR from 'jsqr'
 
+export interface ScannerAdapter { scanDeviceQr(): Promise<string> }
+let adapter: ScannerAdapter | undefined
+export function configureScannerAdapter(next: ScannerAdapter): void { adapter = next }
 export async function scanDeviceQr(): Promise<string> {
+  if (adapter) return adapter.scanDeviceQr()
   if (!Capacitor.isNativePlatform()) throw new Error('请在手机 App 中打开相机扫码，或从相册选择二维码')
   const result = await CapacitorBarcodeScanner.scanBarcode({ hint: CapacitorBarcodeScannerTypeHint.QR_CODE, scanInstructions: '扫描设备机身二维码', scanButton: false })
   if (!result.ScanResult) throw new Error('未识别到二维码')

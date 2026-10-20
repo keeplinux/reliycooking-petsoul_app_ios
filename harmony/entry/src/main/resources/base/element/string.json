@@ -1,0 +1,16 @@
+{
+  "string": [
+    {
+      "name": "app_name",
+      "value": "silifield"
+    },
+    {
+      "name": "module_desc",
+      "value": "硅宠场域"
+    },
+    {
+      "name": "bluetooth_reason",
+      "value": "用于查找饮水机并加密配置 WiFi 网络"
+    }
+  ]
+}

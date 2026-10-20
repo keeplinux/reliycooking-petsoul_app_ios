@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "sync": "npm run build && npx cap sync",
+    "sync": "npm run build && npx cap sync && node scripts/sync-harmony.mjs",
     "sync:ios": "npm run build && npx cap sync ios",
     "sync:android": "npm run build && npx cap sync android",
     "open:ios": "npx cap open ios",
@@ -20,7 +20,9 @@
     "test:ios": "sh scripts/test-ios.sh",
     "release:ios": "sh scripts/release-ios.sh",
     "install:ios": "sh scripts/install-ios.sh",
-    "verify:water-protocol": "node scripts/verify-water-protocol.mjs"
+    "verify:water-protocol": "node scripts/verify-water-protocol.mjs",
+    "sync:harmony": "npm run build && node scripts/sync-harmony.mjs",
+    "build:harmony": "npm run sync:harmony && node scripts/build-harmony.mjs"
   },
   "dependencies": {
     "@capacitor-community/bluetooth-le": "8.3.0",

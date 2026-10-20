@@ -109,6 +109,10 @@
     "src/provisioning.ts": {
       "sha256": "982208ac0b06ea28adace6acd6bf73074d910ee102232b54ec88b4430031e892",
       "reason": "v1.3.18: retain original minimal UI and local data fixes; implement real scanner and authenticated BLE provisioning"
+    },
+    "src/main.tsx": {
+      "sha256": "b8f60b0068694f19b62d6769bf0a6a242ced1b63e060b9f642e69008b71b1cba",
+      "reason": "Harmony host adapter initialization before React mount; no changes to shared pages, CSS or device wire protocol"
     }
   }
 }

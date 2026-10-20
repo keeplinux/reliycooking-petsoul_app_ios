@@ -53,3 +53,18 @@ test-results/
 # Per-device factory credentials and local firmware build output
 firmware/**/include/device_config.h
 firmware/**/.pio/
+
+# Harmony local toolchain, signing credentials, generated Web assets and HAP output
+harmony/local.properties
+harmony/.hvigor/
+harmony/.idea/
+harmony/oh_modules/
+harmony/**/oh_modules/
+harmony/build/
+harmony/entry/build/
+harmony/entry/src/main/resources/rawfile/public/
+harmony/build-profile.local.json5
+*.p7b
+*.csr
+*.hap
+*.app

@@ -1,20 +1,18 @@
-# HarmonyOS NEXT 接入边界
+# silifield · HarmonyOS NEXT
 
-当前统一工程提供 React + TypeScript + Three.js 前端，Android/iOS 由 Capacitor 承载。
-本目录是未来鸿蒙原生壳的接入说明，尚无 ArkTS 工程，也不表示鸿蒙已可编译。
+React/TypeScript/Three.js 与 iOS、Android 共用；本目录为 ArkTS Stage + ArkWeb 工程，不是 Android APK。
 
-建议使用 DevEco Studio 创建 Stage 模型 ArkTS 工程，以 ArkWeb 加载 `npm run build` 的 dist。
-相对资源路径、ArkWeb 本地资源协议、WebGL、字体、安全区、持久化和导航需在真机上验证。
-不要安装 Android APK 来替代 HarmonyOS NEXT 原生适配。
+[移植方案与边界](HARMONY_PORT_PLAN.md)已按现有 App 核对并更新。页面、样式、业务模型和 BLE 加密协议保持共享；相机、扫码和 GATT 在原生适配层实现。原生桥仅暴露白名单 JSON RPC，不向外部页面开放。
 
-当前唯一直接调用的 Capacitor 原生插件是相机，已收敛到 `src/platform/camera.ts`：
-- iOS/Android 默认使用 Capacitor Camera。
-- 鸿蒙启动 React 前调用 configureCameraAdapter，注入实现 getPhoto 的适配器。
-- ArkTS 相机/照片选择器通过受限 JavaScript Proxy 返回 Photo 契约；不得暴露任意代码执行接口。
-- 取消、权限拒绝和读取失败必须 reject Promise，页面已有错误处理。
+```sh
+npm ci
+npm run sync
+npm run verify:parity
+npm run build:harmony
+```
 
-后续 BLE、Wi-Fi、扫码、通知应分别建立同类接口和平台实现，禁止在业务页面堆叠平台判断。
-现有 BLE/扫码等仍为安卓原型的模拟逻辑，尚无可直接复用的真实传输层。
+用 DevEco Studio 打开本目录，完成 SDK/依赖同步。通过 Signing Configs 配置个人开发签名和目标设备，生成的 HAP 在 entry/build/default/outputs/default/。CLI 自动寻找 /Applications/DevEco-Studio.app/Contents，可通过 DEVECO_HOME/HVIGORW_JS 覆盖。
 
-接入顺序：ArkWeb 展示与 WebGL → 原生相机桥 → 存储与权限 → BLE/配网 → 真机回归。
-共享 src/public，不复制独立页面；鸿蒙壳使用同一版本的 dist。
+当前本机缺少 DevEco Studio/HarmonyOS SDK，尚未完成 ArkTS 编译、HAP 签名和鸿蒙真机验收。工程文件和通过的 Web 检查不代表已生成手机可安装包。状态见 [本次验证记录](../docs/verification/HARMONY_2026-10-20.md)。
+
+rawfile/public 由 sync 生成，禁止手工修改；web-manifest.json 记录资源指纹。签名文件、密码和用户设备资料不提交 Git。

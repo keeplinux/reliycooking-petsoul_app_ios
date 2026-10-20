@@ -82,5 +82,11 @@ async function provisionDevice(payload: QrPayload, ssid: string, password: strin
 
 return { connectDevice, disconnectDevice, provisionDevice }
 }
-const client = createHardwareClient(BleClient)
-export const { connectDevice, disconnectDevice, provisionDevice } = client
+let client = createHardwareClient(BleClient)
+export function configureHardwareClient(transport: BleTransport): void {
+  void client.disconnectDevice()
+  client = createHardwareClient(transport, () => true)
+}
+export const connectDevice: typeof client.connectDevice = (...args) => client.connectDevice(...args)
+export const disconnectDevice: typeof client.disconnectDevice = (...args) => client.disconnectDevice(...args)
+export const provisionDevice: typeof client.provisionDevice = (...args) => client.provisionDevice(...args)
