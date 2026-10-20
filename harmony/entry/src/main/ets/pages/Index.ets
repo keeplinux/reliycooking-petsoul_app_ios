@@ -99,7 +99,8 @@ struct Index {
         .onLoadIntercept((event) => !event.data.getRequestUrl().startsWith(APP_ORIGIN + '/'))
         .onShowFileSelector((event) => {
           if (!event) return false;
-          this.proxy.media.selectPhoto().then((uris: string[]) => event.result.handleFileList(uris))
+          this.proxy.media.selectFiles(event.fileSelector.getAcceptType(), event.fileSelector.isCapture())
+            .then((uris: string[]) => event.result.handleFileList(uris))
             .catch(() => event.result.handleFileList([]));
           return true;
         })

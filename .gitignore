@@ -68,3 +68,6 @@ harmony/build-profile.local.json5
 *.csr
 *.hap
 *.app
+
+# Explicitly published, unsigned HarmonyOS NEXT preview artifact
+!/artifacts/harmony/1.3.18/silifield-1.3.18-harmony-next-unsigned.hap

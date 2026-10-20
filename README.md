@@ -11,7 +11,7 @@
 - `public/`：共享字体、图片等资源。
 - `android/`：原安卓工程，包名 com.pawlink.petwater。
 - `ios/`：Capacitor iOS 工程，同一包名，最低 iOS 16，iPhone 竖屏。
-- `harmony/`：HarmonyOS NEXT ArkTS/ArkWeb 工程与接入方案，原生编译和真机签名验收待完成。
+- `harmony/`：HarmonyOS NEXT ArkTS/ArkWeb 工程与接入方案，已完成原生编译与 NEXT 模拟器验证；真机签名验收待完成。
 - `docs/verification/`：本次迁移验证结果与限制。
 - `tests/ios/`：独立 XCUITest 导航/持久化验收工程。
 
@@ -77,4 +77,4 @@ xcodebuild -project tests/ios/ParityTests.xcodeproj -scheme ParityUITests -desti
 
 保持现有 App 界面，硬件以 ESP32-S3 为目标。传感器、摄像头/视频、TF、灯语、网络/云端和音频均已整理预留合同，详见 [硬件开发资料](docs/hardware/README.md)。当前固件仍只实现 BLE 配网，业务数据和外设功能尚未实现。执行 `npm run verify:water-protocol` 校验协议样例。
 
-鸿蒙适配工程及构建前提见 [鸿蒙说明](harmony/README.md)；执行 `npm run build:harmony` 前需要 DevEco Studio 与 HarmonyOS SDK。
+鸿蒙适配工程及构建前提见 [鸿蒙说明](harmony/README.md)；执行 `npm run build:harmony` 前需要 DevEco Studio 与 HarmonyOS SDK。已生成的 [NEXT 未签名 HAP 与安装说明](artifacts/harmony/1.3.18/INSTALL.md)可用于模拟器验证，NEXT 手机仍需合法签名。

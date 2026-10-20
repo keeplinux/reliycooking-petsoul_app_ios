@@ -1,6 +1,6 @@
 # HarmonyOS NEXT 移植与验收方案
 
-版本：v1.1，2026-10-20。替代 v1.0 中尚未核实的能力、时序及验收描述。
+版本：v1.2，2026-10-21。替代 v1.0 中尚未核实的能力、时序及验收描述。
 
 目标：沿用 iOS 的简约界面与共享 React/TypeScript/Three.js 业务，新增 ArkTS Stage + ArkWeb 宿主；生成真正的 HAP，不使用 Android APK 兼容方式。
 
@@ -27,7 +27,7 @@
 - camera.ts 继续使用既有 Adapter；scanner.ts 新增同类 Adapter；hardware.ts 增加默认客户端切换。
 - harmony/entry：Stage Ability、ArkWeb 页面、MediaBridge、BleBridge、受限 JsProxy。
 - 相机使用 CameraPicker；相册使用 PhotoViewPicker；系统扫码使用 Scan Kit；BLE 使用 Connectivity Kit。
-- ArkWeb file input 通过系统照片选择器返回 URI，原有 jsQR 相册解码不变。
+- ArkWeb file input 按 accept/capture 选择系统拍照、图片或视频选择器；兼容 API12/13 将 MIME 展开为扩展名的行为，返回授权 URI，原有压缩、jsQR 与视频处理不变。
 - 本地页面使用同一个固定源，LocalStorage/IndexedDB 沿用既有账号隔离，不开启无痕模式、不在普通退出时清空数据。
 - Web 容器保留系统安全区，锁定竖屏；软键盘、系统字号和 WebGL 的最终表现仍需鸿蒙设备验证。
 - 图标直接复用 iOS AppIcon；权限、扫码界面和蓝牙设备选择由鸿蒙宿主承载，不要求模仿 iOS 系统弹窗。
@@ -44,7 +44,7 @@ JS→ArkTS 仅暴露 SilifieldNative.invoke(string)：
 
 原生端校验顶层 URL、方法白名单、请求长度、并发数和重复 ID。BLE 限当前选择的设备、固定配网服务及 Info/Config/Status 特征，写入20字节上限，不能当任意蓝牙控制接口。没有 eval、任意文件路径或任意代码执行方法。
 
-拦截资源只读 packaged rawfile/public，拒绝目录穿越、外部导航与外部资源；CSP 禁止 frame/object/外部脚本，避免远程页面使用本地桥。禁止忽略 SSL 错误、打开全域文件访问或记录 WiFi 密码/QR 密钥。
+拦截资源只读 packaged rawfile/public，拒绝目录穿越、外部导航与外部资源；CSP 禁止 frame/object/外部脚本，避免远程页面使用本地桥。禁止忽略 SSL 错误、打开全域文件访问或记录 WiFi 密码/QR 密钥。Web 调试仅在 BuildProfile.DEBUG 为 true 时开启；交付 Release 包验证 DEBUG=false。
 
 进入后台停止扫描、断开 GATT、取消设备选择；连接、扫描及选择有时限。回前台需重新连接，不伪造成功。实际生命周期行为必须真机回归。
 
@@ -60,6 +60,9 @@ npm run verify:baseline
 npm run verify:water-protocol
 npm run test:web
 npm run build:harmony
+npm run verify:harmony-package
+# 交付构建：Release 关闭 ArkWeb 调试
+node scripts/build-harmony.mjs --release
 ```
 
 sync 同时更新 Capacitor 两端和鸿蒙 rawfile，verify:parity 校验三端全部资源 SHA-256。仅运行 build/sync:harmony 后若两端资源落后，parity 应失败，不自动跳过。
@@ -79,7 +82,7 @@ sync 同时更新 Capacitor 两端和鸿蒙 rawfile，verify:parity 校验三端
 | 签名安装 | 合法签名和设备授权 | hdc 安装/启动成功 |
 | 鸿蒙真机 | 全页面、WebGL、相机、file input、扫码、BLE配网、持久化、键盘/字号/安全区、后台恢复 | 逐项实际操作与截图/日志，不以 Chromium 替代 ArkWeb |
 
-当前边界：已写入鸿蒙工程和适配实现，Web 侧可独立验证；本机尚未检测到 DevEco、SDK 或 hdc，原生部分未编译，尚无可安装 HAP。真实水机固件仍需实现兼容的 BLE 协议才能联调。以 docs/verification/HARMONY_2026-10-20.md 记录本次最终验证状态。
+当前边界：已使用 DevEco Studio 26.0.0 / SDK 26.0.0.105 完成实际 ArkTS 编译并生成未签名 HAP，包内17个 Web 资源已校验。已在官方 NEXT 5.0.1 / API13 模拟器安装、启动并验证主要页面、存储、安全源及选择器；Release 包关闭调试。开发/发布签名及 NEXT 真机验收仍待完成；HarmonyOS 4.2 不适用，用户已确认不生成兼容 APK。真实水机固件仍需实现兼容的 BLE 协议才能联调。以 docs/verification/HARMONY_2026-10-20.md 记录本次最终验证状态。
 
 ## 官方依据
 

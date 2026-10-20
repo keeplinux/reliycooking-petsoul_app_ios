@@ -22,7 +22,8 @@
     "install:ios": "sh scripts/install-ios.sh",
     "verify:water-protocol": "node scripts/verify-water-protocol.mjs",
     "sync:harmony": "npm run build && node scripts/sync-harmony.mjs",
-    "build:harmony": "npm run sync:harmony && node scripts/build-harmony.mjs"
+    "build:harmony": "npm run sync:harmony && node scripts/build-harmony.mjs",
+    "verify:harmony-package": "python3 scripts/verify-harmony-package.py"
   },
   "dependencies": {
     "@capacitor-community/bluetooth-le": "8.3.0",

@@ -85,7 +85,7 @@ export class BleBridge {
           this.emit({ event: 'notification', deviceId: id, service: SERVICE, characteristic: STATUS, bytes: Array.from(new Uint8Array(value.characteristicValue)) });
         }
       });
-    } catch (error) { this.disconnect(); throw error; }
+    } catch (error) { this.disconnect(); throw new Error((error as Error).message || "原生能力调用失败"); }
   }
   private characteristic(params: BleParams, expected: string): ble.BLECharacteristic {
     if (!this.client || params.deviceId !== this.deviceId || params.service?.toLowerCase() !== SERVICE || params.characteristic?.toLowerCase() !== expected) throw new Error('无效或未连接的设备特征');
@@ -106,7 +106,9 @@ export class BleBridge {
     const characteristic = this.characteristic(params, CONFIG);
     const bytes = params.bytes;
     if (!bytes || bytes.length < 3 || bytes.length > 20 || bytes.some((value: number) => !Number.isInteger(value) || value < 0 || value > 255)) throw new Error('无效配网分片');
-    characteristic.characteristicValue = Uint8Array.from(bytes).buffer;
+    const buffer = new ArrayBuffer(bytes.length);
+    new Uint8Array(buffer).set(bytes);
+    characteristic.characteristicValue = buffer;
     await this.client!.writeCharacteristicValue(characteristic, ble.GattWriteType.WRITE);
   }
   async notify(params: BleParams): Promise<void> {

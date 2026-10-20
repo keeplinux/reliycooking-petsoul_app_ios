@@ -9,10 +9,13 @@ npm ci
 npm run sync
 npm run verify:parity
 npm run build:harmony
+# 交付 Release 未签名包，关闭 Web 调试
+node scripts/build-harmony.mjs --release
+npm run verify:harmony-package
 ```
 
 用 DevEco Studio 打开本目录，完成 SDK/依赖同步。通过 Signing Configs 配置个人开发签名和目标设备，生成的 HAP 在 entry/build/default/outputs/default/。CLI 自动寻找 /Applications/DevEco-Studio.app/Contents，可通过 DEVECO_HOME/HVIGORW_JS 覆盖。
 
-当前本机缺少 DevEco Studio/HarmonyOS SDK，尚未完成 ArkTS 编译、HAP 签名和鸿蒙真机验收。工程文件和通过的 Web 检查不代表已生成手机可安装包。状态见 [本次验证记录](../docs/verification/HARMONY_2026-10-20.md)。
+已使用 DevEco Studio 26.0.0 Release / SDK 26.0.0.105 实际编译并生成未签名 HAP，`npm run verify:harmony-package` 可校验包内字节码与17个共享资源。官方 NEXT 5.0.1 / API13 模拟器安装、启动及基础回归已通过；[交付包](../artifacts/harmony/1.3.18/INSTALL.md)为关闭调试的 Release 未签名 HAP。签名与 NEXT 真机验收尚未完成，不能把未签名包当作可直接安装包。HarmonyOS 4.2 手机不适用；用户已确认仅继续 NEXT 路线。状态见 [本次验证记录](../docs/verification/HARMONY_2026-10-20.md)。
 
 rawfile/public 由 sync 生成，禁止手工修改；web-manifest.json 记录资源指纹。签名文件、密码和用户设备资料不提交 Git。

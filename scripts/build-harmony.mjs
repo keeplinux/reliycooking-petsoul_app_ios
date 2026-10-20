@@ -1,6 +1,6 @@
 import { existsSync } from 'node:fs'
 import { spawnSync } from 'node:child_process'
-import { join } from 'node:path'
+import { join, delimiter } from 'node:path'
 const candidates = [process.env.DEVECO_HOME, '/Applications/DevEco-Studio.app/Contents', '/Applications/DevEco Studio.app/Contents'].filter(Boolean)
 const home = candidates.find(path => existsSync(join(path, 'tools/hvigor/bin/hvigorw.js')))
 const runner = process.env.HVIGORW_JS || (home && join(home, 'tools/hvigor/bin/hvigorw.js'))
@@ -9,5 +9,12 @@ if (!runner || !existsSync(runner)) {
   process.exit(2)
 }
 const node = home && existsSync(join(home, 'tools/node/bin/node')) ? join(home, 'tools/node/bin/node') : process.execPath
-const result = spawnSync(node, [runner, '--mode', 'module', '-p', 'product=default', '-p', 'module=entry@default', '-p', 'buildMode=debug', 'assembleHap', '--no-daemon'], { cwd: 'harmony', stdio: 'inherit', env: process.env })
+const env = { ...process.env }
+const mode = process.argv.includes('--release') ? 'release' : 'debug'
+if (home) {
+  env.DEVECO_SDK_HOME ||= join(home, 'sdk')
+  env.JAVA_HOME ||= join(home, 'jbr/Contents/Home')
+  env.PATH = [join(home, 'tools/node/bin'), join(home, 'tools/ohpm/bin'), env.PATH].join(delimiter)
+}
+const result = spawnSync(node, [runner, '--mode', 'module', '-p', 'product=default', '-p', 'module=entry@default', '-p', `buildMode=${mode}`, 'assembleHap', '--no-daemon'], { cwd: 'harmony', stdio: 'inherit', env })
 process.exit(result.status ?? 1)

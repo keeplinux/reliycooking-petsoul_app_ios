@@ -62,5 +62,5 @@ export class JsProxy {
     return 'null';
   }
   suspend(): void { this.ble.dispose(); }
-  dispose(): void { this.active = false; this.ble.dispose(); this.requests.clear(); }
+  dispose(): void { this.active = false; this.ble.dispose(); this.media.dispose(); this.requests.clear(); }
 }
